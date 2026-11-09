@@ -1,0 +1,2077 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>זוהר תולדות - טיוטה</title>
+<style>
+:root {
+  --bg: #faf7f1; --paper: #fffdf8; --fg: #1f1d1a; --muted: #6f6a62; --line: #e6e0d4;
+  --accent: #7a1f2b; --accent-soft: #f3e4e6; --hl: #fff1b8; --hl-strong: #ffe07a; --soon: #b8b2a8;
+  --font-ar: "Guttman Vilna", "Vilna", "Frank Ruhl Libre", "David", "Times New Roman", serif;
+  --font-he: "FrankRuehl", "Frank Ruhl Libre", "David", "Times New Roman", serif;
+  --font-ui: "Segoe UI", "Arial", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-he); line-height: 1.75; padding-bottom: 120px; }
+button { font-family: var(--font-ui); font-size: 0.95rem; cursor: pointer; border: 1px solid var(--line); background: #fff; color: var(--fg); border-radius: 8px; padding: 6px 12px; min-height: 36px; }
+button:hover { border-color: var(--accent); }
+button[aria-pressed="true"], button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+button:disabled { opacity: .5; cursor: default; }
+button.soon { color: var(--soon); border-style: dashed; }
+button.soon[aria-pressed="true"] { background: var(--soon); border-color: var(--soon); color: #fff; }
+.badge { font-size: .7rem; margin-inline-start: 4px; padding: 1px 5px; border-radius: 10px; background: #efece6; color: var(--muted); vertical-align: middle; }
+button[aria-pressed="true"] .badge { background: rgba(255,255,255,.3); color: #fff; }
+
+header.top { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+.topline { display: flex; align-items: center; gap: 14px; padding: 8px 16px 0; flex-wrap: wrap; }
+.draft { font-family: var(--font-ui); font-size: .8rem; letter-spacing: .08em; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 4px; }
+h1 { font-size: 1.35rem; margin: 0; font-weight: 600; }
+/* 6.11: all the settings are always visible, in ONE row inside the sticky header (no fold-out panel). The row never
+   wraps: when it does not fit, fitSettings() narrows it step by step (#settings.lv1 short labels, .lv2 compact select
+   boxes instead of the button groups, .lv3 the listening control as an icon and narrower buttons). */
+#settings { display: flex; flex-wrap: nowrap; align-items: center; gap: 6px 14px; padding: 6px 16px 8px; font-family: var(--font-ui); overflow: hidden; }
+.ctl { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; min-width: 0; }
+.ctl > .lbl { font-size: .75rem; color: var(--muted); white-space: nowrap; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.seg { flex-wrap: nowrap; gap: 0; }
+.seg button { border-radius: 0; margin-inline-start: -1px; white-space: nowrap; padding: 4px 10px; min-height: 32px; }
+.seg button:first-child { border-start-start-radius: 8px; border-end-start-radius: 8px; margin-inline-start: 0; }
+.seg button:last-child { border-start-end-radius: 8px; border-end-end-radius: 8px; }
+.seg button .badge { margin-inline-start: 3px; }
+.short { display: none; }
+select.speedsel { display: none; }
+select.segsel, select.speedsel { display: none; font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 2px; min-width: 0; width: 100%; }
+.switch { display: flex; align-items: center; gap: 6px; min-height: 32px; cursor: pointer; user-select: none; white-space: nowrap; font-size: .9rem; }
+.switch input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.speed .row { flex-wrap: nowrap; gap: 4px; }
+.speed button { min-height: 32px; padding: 2px 10px; }
+.speed .val { min-width: 2.6em; text-align: center; font-weight: 600; }
+#settings.lv1 .full { display: none; }
+#settings.lv1 .short { display: inline; }
+#settings.lv2 { gap: 6px 8px; padding: 6px 12px 8px; }
+#settings.lv2 .seg { display: none; }
+#settings.lv2 select.segsel { display: block; }
+#settings.lv2 .ctl.sel { flex: 1 1 0; }
+#settings.lv2 .ctl > .lbl { display: none; }
+#settings.lv3 { gap: 6px 5px; padding: 6px 8px 8px; }
+#settings.lv3 .speed .row, #settings.lv3 .speed > .lbl { display: none; }
+#settings.lv3 select.speedsel { display: block; width: 3.6em; }
+#settings.lv3 select.segsel, #settings.lv3 select.speedsel { -webkit-appearance: none; appearance: none; font-size: .8rem; padding: 2px 4px 2px 13px; text-overflow: ellipsis;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0h8L4 5z' fill='%236f6a62'/%3E%3C/svg%3E") no-repeat left 4px center; }
+#settings.lv3 .switch { font-size: .8rem; gap: 3px; }
+#settings.lv3 .listen-btn .t, #settings.lv3 .listen-btn .cur .nm { display: none; }
+#settings.lv3 .listen-btn { padding: 2px 6px; min-height: 32px; flex-direction: row; align-items: center; }
+#settings.lv3 .listen-btn .cur::after { content: ' ▾'; color: var(--muted); }
+#settings.lv3 .listen-btn .cur .ic { font-size: 1.05rem; }
+/* "איפה אתה שומע?" (6.11): to the left of the speed. Closed by default (the heading and, small, the current choice);
+   the heading button opens the drop-down menu. The menu is position:fixed (placed from the button by placeListenMenu),
+   so the row (overflow hidden) and the rest of the bar cannot cut it, and it is above all the content. */
+.listen { position: relative; min-width: 0; }
+.listen-btn { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0; line-height: 1.2; padding: 2px 10px; min-height: 32px; text-align: start; white-space: nowrap; }
+.listen-btn .t { font-weight: 600; font-size: .9rem; }
+.listen-btn .t::after { content: ' ▾'; color: var(--muted); font-size: .8rem; }
+.listen-btn[aria-expanded="true"] .t::after { content: ' ▴'; }
+.listen-btn .cur { font-size: .72rem; color: var(--muted); }
+.listen-menu { position: fixed; z-index: 30; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  padding: 6px; display: none; overflow: auto; width: 290px; max-width: calc(100vw - 16px); }
+.listen-menu.open { display: block; }
+.listen-menu .row { flex-direction: column; align-items: stretch; gap: 2px; }
+.listen-menu .row button { display: flex; align-items: center; gap: 8px; border: 0; text-align: start; width: 100%; min-height: 36px; }
+.listen-menu .row button[aria-pressed="false"] { background: transparent; }
+.listen-menu .row button[aria-pressed="false"]:hover { background: #f5f1ea; }
+.listen-menu .row button .ic { font-size: 1.1rem; }
+.listen-menu .hint { display: block; font-size: .75rem; color: var(--muted); padding: 6px 8px 2px; border-top: 1px dashed var(--line); margin-top: 4px; }
+/* 6.11: the two counters in the header and the page "שאלות Claude Code" */
+.counters { display: flex; gap: 6px; margin-inline-start: auto; font-family: var(--font-ui); }
+.cnt { font-family: var(--font-ui); font-size: .8rem; color: var(--muted); background: #efece6; border: 1px solid var(--line); border-radius: 12px; padding: 2px 10px; min-height: 0; line-height: 1.5; white-space: nowrap; }
+.cnt b { color: var(--fg); }
+button.cnt.has { background: var(--accent-soft); border-color: #d9b7bc; }
+button.cnt.has b { color: var(--accent); }
+.qpage { position: fixed; inset: 0; z-index: 40; background: var(--bg); overflow: auto; font-family: var(--font-ui); }
+.qpage[hidden] { display: none; }
+.q-inner { max-width: 900px; margin: 0 auto; padding: 14px 16px 40px; }
+.q-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; position: sticky; top: 0; background: var(--bg); padding: 6px 0; z-index: 1; border-bottom: 1px solid var(--line); }
+.q-head h2 { margin: 0; font-size: 1.35rem; color: var(--accent); }
+.q-head .pron-x { border: 1px solid var(--line); background: #fff; min-height: 32px; padding: 2px 12px; font-size: .9rem; color: var(--fg); }
+.q-sum { margin: 10px 0 2px; font-size: .95rem; }
+.q-help { margin: 0 0 8px; font-size: .82rem; color: var(--muted); line-height: 1.5; }
+.q-status { font-size: .85rem; color: var(--accent); min-height: 1.2em; }
+.q-sec h3 { font-size: 1.1rem; margin: 18px 0 8px; color: #3a2f2f; }
+.q-sec.q-mine { background: #e9f0fb; border: 2px solid #4a6fb5; border-radius: 12px; padding: 2px 12px 4px; margin-top: 8px; }   /* 8.11: "ממתינים לאישור שלך" (סוג "תיקון שלי") - in the page "תיקונים ממתינים" */
+.q-sec.q-mine h3 { color: #2f4f8f; margin-top: 10px; }
+/* 8.11 (ערב): the page "תיקונים ממתינים" (Yanki's own corrections only): section א = the rows of תיקונים ממתינים.tsv (typed,
+   not processed yet), section ב = the "תיקון שלי" items of the questions file (before/after, waiting for his ear). */
+.ppage .q-head h2 { color: #2f4f8f; }
+.q-sec.q-todo { background: #f6f2ea; border: 1px solid var(--line); border-radius: 12px; padding: 2px 12px 4px; margin-top: 8px; }
+.q-sec.q-todo h3 { margin-top: 10px; }
+.q-sec .q-sec-help { margin: -4px 0 8px; }
+.q-del { font-size: .85rem; }
+.q-card .q-fix-text { font-family: var(--font-he); font-size: 1.15rem; font-weight: 700; }
+.q-card.q-mine-card { border-color: #4a6fb5; background: #f3f7fd; }                 /* a "תיקון שלי" card (blue) */
+/* 8.11 ערב (2): the history sections - "בוצעו" (questions page) and "נשלחו" (pending page) - plain rows, not cards */
+.q-sec.q-done, .q-sec.q-sent { border-top: 2px solid var(--line); margin-top: 22px; padding-top: 4px; }
+.q-sec.q-done h3, .q-sec.q-sent h3 { color: var(--muted); }
+.q-hist { list-style: none; margin: 0; padding: 0; }
+.q-hist li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 6px 4px; border-bottom: 1px dashed var(--line); font-size: .95rem; }
+.q-hist li.q-mine-row { border-inline-start: 3px solid #4a6fb5; padding-inline-start: 8px; }
+.q-hist .q-hist-name { font-family: var(--font-he); font-weight: 600; font-size: 1.05rem; }
+.q-hist .q-hist-ans { font-weight: 700; padding: 0 8px; border-radius: 10px; background: #efece6; }
+.q-hist .q-hist-ans[data-a="כן"] { background: #e3efe5; color: #2f6b3a; } .q-hist .q-hist-ans[data-a="לא"] { background: #f4e2e2; color: #8a2b2b; }
+.q-hist small { color: var(--muted); font-size: .78rem; }
+.q-hist .q-hist-state { color: #8a6d1f; font-size: .85rem; }
+.q-hist li.reverted { opacity: .55; text-decoration: line-through; }
+.q-hist li.reverted .q-hist-state { text-decoration: none; }
+.q-hist button { min-height: 26px; padding: 1px 10px; font-size: .82rem; margin-inline-start: auto; }
+/* 8.11 ערב: "שלח" (pending page) and "אשר" (questions page) run questions.py through serve.py; progress under the button */
+.q-head-btns { display: flex; align-items: center; gap: 8px; }
+.q-run { background: #2f6b3a; color: #fff; border-color: #2f6b3a; font-weight: 600; min-height: 32px; padding: 2px 16px; }
+.q-run:disabled { background: #cfc7b8; border-color: #cfc7b8; color: #fff; cursor: default; }
+.q-run.big { font-size: 1.05rem; min-height: 40px; padding: 6px 28px; }
+.ppage .q-run { background: #2f4f8f; border-color: #2f4f8f; }
+.ppage .q-run:disabled { background: #cfc7b8; border-color: #cfc7b8; }
+.q-apply { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.q-apply-hint { font-size: .9rem; color: #4a453e; }
+.q-run-msg { width: 100%; font-size: .95rem; font-weight: 600; color: #2f4f8f; min-height: 1.2em; }
+.q-run-msg:empty { display: none; }
+.q-run-out { width: 100%; max-height: 220px; overflow: auto; direction: ltr; text-align: left; font-size: .75rem; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin: 0; white-space: pre-wrap; }
+.q-run-out[hidden] { display: none; }
+.q-card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 0 0 10px; }
+.q-card.answered { border-color: #cfc7b8; }
+.q-name { font-family: var(--font-he); font-size: 1.15rem; font-weight: 700; }
+.q-meta { font-size: .78rem; color: var(--muted); margin-inline-start: 6px; font-weight: 400; font-family: var(--font-ui); }
+.q-words { font-family: var(--font-he); font-size: 1rem; margin: 4px 0; }
+.q-words small, .q-sent small { font-family: var(--font-ui); color: var(--muted); font-size: .75rem; }
+.q-sent { font-size: 1.15rem; margin: 6px 0; padding: 6px 10px; background: #f6f2ea; border-radius: 8px; line-height: 1.7; }
+.q-sent.ar { font-family: var(--font-ar); } .q-sent.he { font-family: var(--font-he); }
+.q-detail { font-size: .85rem; color: #4a453e; margin: 4px 0 8px; direction: rtl; }
+.q-heard { display: inline-flex; gap: 4px; align-items: center; margin-inline-start: 6px; }   /* 9.11: "איך זה נשמע עכשיו?" */
+.q-heard input { font: inherit; font-size: .9rem; padding: 3px 8px; border: 1px solid var(--line); border-radius: 8px; width: 9em; }
+/* 9.11: the page "לא הצליח": method names, "עוד 3" / "הקלט", the IPA box, the option from the recording */
+.f-method { font-weight: 700; }
+.f-tools { margin-top: 6px; }
+.f-rec .q-row { flex-wrap: wrap; align-items: center; gap: 8px; }
+.f-ipa { font: inherit; font-size: 1rem; padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; width: 12em; }
+.f-lat { font-weight: 700; letter-spacing: .02em; }
+.f-from-rec { border-inline-start: 3px solid var(--accent); padding-inline-start: 8px; }
+.f-write .q-row { flex-wrap: wrap; align-items: center; gap: 6px; }   /* 10.11: "✏️ כתוב IPA" */
+.f-sign { font-size: 1rem; min-width: 2em; }
+.q-rec { font-weight: 700; font-size: .95rem; margin: 6px 0 6px; padding: 4px 10px; border-inline-start: 4px solid var(--accent); background: #fff8e8; border-radius: 6px; }
+.q-examples { margin: 4px 0 10px; padding: 0 22px 0 0; }   /* 9.11: the 3 examples of a rule */
+.q-example { margin: 0 0 8px; padding: 6px 8px; border: 1px dashed var(--line); border-radius: 8px; }
+.q-example .q-row { margin-top: 4px; }
+.q-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; }
+.q-row .sep { width: 1px; height: 24px; background: var(--line); margin: 0 4px; }
+.q-play.playing { background: var(--hl-strong); border-color: #d9b45a; }
+.q-ans[data-a="כן"][aria-pressed="true"] { background: #2f6b3a; border-color: #2f6b3a; }
+.q-ans[data-a="לא"][aria-pressed="true"] { background: #8a2b2b; border-color: #8a2b2b; }
+.q-ans[data-a="לא בטוח"][aria-pressed="true"] { background: #8a6d1f; border-color: #8a6d1f; }
+.q-return { margin-inline-start: auto; font-size: .85rem; }   /* 9.11 */
+#pList .q-tools .pron-lbl:has(+ .pron-pending), #pList .q-tools .pron-pending { display: none; }   /* 9.11: the card itself is the pending row */
+#pToggle, #qToggle { display: none !important; }   /* 9.11: "תיקונים ממתינים" and "שאלות" open only from the counters at the top */
+/* 8.11 (שיחת האתר): under every question item - the numbered word list of its example sentence (the very list of דף הגייה,
+   collapsed, "הצג מילים"), the pending corrections of that sentence and the corrections box (the panel's functions). */
+.q-tools { border-top: 1px dashed var(--line); margin-top: 10px; padding-top: 8px; }
+.q-tools .q-where { font-size: .78rem; color: var(--muted); }
+.q-tools .pron-words { columns: 3; font-size: 1rem; margin: 8px 0 6px; }
+.q-tools .pron-words[hidden] { display: none; }
+.q-tools .pron-lbl { margin-top: 8px; }
+.q-tools .pron-pending { font-size: .95rem; max-width: 560px; }
+.q-tools textarea { font-size: .95rem; }
+.q-card.q-focus { outline: 3px solid var(--accent); outline-offset: 3px; }
+.pron-mine li b { font-weight: 600; }
+@media (max-width: 640px) { .q-tools .pron-words { columns: 2; } }
+@media (max-width: 640px) { .counters { margin-inline-start: 0; } .cnt { font-size: .72rem; padding: 1px 7px; } .q-sent { font-size: 1.05rem; } }
+.notice { font-family: var(--font-ui); font-size: .85rem; color: var(--muted); padding: 0 16px 8px; }
+
+main { max-width: 860px; margin: 0 auto; padding: 18px 16px; }
+section.article { margin-bottom: 42px; }
+h2.article-title { font-size: 1.6rem; margin: 10px 0 2px; color: var(--accent); font-weight: 700; }
+p.summary { margin: 0 0 18px; color: var(--muted); font-size: 1rem; }
+article.para { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin: 0 0 14px; transition: box-shadow .2s; }
+article.para.current { box-shadow: 0 0 0 2px var(--accent-soft), 0 2px 10px rgba(0,0,0,.05); border-color: #d9b7bc; }
+.para-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.letter { font-family: var(--font-ar); font-weight: 700; color: var(--accent); font-size: 1.35rem; min-width: 1.6em; text-align: center; background: var(--accent-soft); border-radius: 8px; padding: 0 6px; line-height: 1.6; }
+h3.title { font-size: 1.1rem; margin: 0; font-weight: 600; color: #3a2f2f; cursor: pointer; border-radius: 6px; padding: 2px 6px; line-height: 1.6; }
+h3.title:hover { background: #f5f1ea; }
+h3.title.active { background: var(--hl-strong); font-weight: 700; }
+.block { font-size: 1.3rem; }
+.block.ar { font-family: var(--font-ar); }
+.block.he { font-family: var(--font-he); }
+.block .lang-lbl { display: none; font-family: var(--font-ui); font-size: .72rem; color: var(--muted); margin-inline-end: 6px; vertical-align: middle; }
+body.lang-both .block .lang-lbl { display: inline; }
+body.lang-both .block.he { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+body.lang-ar .block.he, body.lang-he .block.ar { display: none; }
+.sent { cursor: pointer; border-radius: 4px; padding: 1px 2px; transition: background .15s; }
+.sent:hover { background: #f1ece2; }
+.sent.active { background: var(--hl); box-shadow: 0 0 0 2px var(--hl); }
+.sent.noaudio { cursor: default; }
+.pairs { display: none; }
+body.lang-pair .pairs { display: block; }
+body.lang-pair .block { display: none; }
+.pair { padding: 6px 0 8px; border-bottom: 1px dashed var(--line); }
+.pair:last-child { border-bottom: 0; }
+.pair .sent { display: block; }
+.pair .sent.ar { font-family: var(--font-ar); font-size: 1.3rem; }
+.pair .sent.he { font-family: var(--font-he); font-size: 1.15rem; color: #3f3a34; margin-top: 2px; }
+.pair .sent.he.same { color: var(--soon); }      /* almost the same as the Zohar's words: shown, not played */
+@media (max-width: 640px) { .pair .sent.ar { font-size: 1.18rem; } .pair .sent.he { font-size: 1.05rem; } }
+
+footer.player { position: fixed; bottom: 0; right: 0; left: 0; z-index: 6; background: var(--paper); border-top: 1px solid var(--line); box-shadow: 0 -2px 10px rgba(0,0,0,.06); font-family: var(--font-ui); }
+.player-inner { max-width: 860px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.transport { display: flex; gap: 8px; align-items: center; }
+#playBtn { min-width: 110px; font-weight: 600; background: var(--accent); color: #fff; border-color: var(--accent); }
+#now { font-size: .9rem; color: var(--muted); flex: 1; min-width: 160px; }
+#now b { color: var(--fg); }
+.progress { height: 10px; background: var(--line); border-radius: 5px; width: 100%; position: relative; cursor: pointer; touch-action: none; direction: ltr; }   /* 9.11: drag / click to seek */
+.progress > div { height: 100%; width: 0; background: var(--accent); border-radius: 5px; transition: width .2s linear; position: relative; }
+.progress > div::after { content: ""; position: absolute; right: -8px; top: 50%; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px #fff; }
+.progress.dragging > div { transition: none; }
+.player-msg { font-size: .8rem; color: var(--accent); width: 100%; min-height: 1em; }
+
+/* the pronunciation panel (5.11): the words of the sentence being played, numbered as in the pronunciation pages,
+   the pending corrections of that sentence, and a box to type new corrections (saved to תיקונים ממתינים.tsv via serve.py) */
+.pron { position: fixed; left: 12px; top: calc(var(--hdr, 110px) + 10px); bottom: 100px; width: 470px; background: var(--paper);   /* 9.11: wider, 3 columns */
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08); padding: 10px 12px; overflow: auto; font-family: var(--font-ui); font-size: .9rem; z-index: 4; display: none; }
+body.pron-open .pron { display: block; }
+.pron-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 1rem; }
+.pron-x { border: 0; background: none; font-size: 1rem; color: var(--muted); min-height: 24px; padding: 2px 6px; }
+.pron-where { color: var(--muted); font-size: .82rem; margin-bottom: 6px; line-height: 1.4; }
+.pron-words { margin: 0 0 10px; padding: 0 20px 0 0; font-family: var(--font-he); font-size: 1.1rem; line-height: 1.5; columns: 3; column-gap: 12px; }
+.pron-words li { break-inside: avoid; }
+.pron-words li small { font-family: ui-monospace, Consolas, monospace; font-size: .72rem; color: var(--muted); margin-inline-start: 4px; direction: ltr; display: inline-block; }
+.pron-words li.active { background: var(--hl); }
+/* 10.11: quick phonetic fix */
+#pronWords li.qf-word { cursor: pointer; }
+#pronWords .qf-box, #pronWords .qf-tag { column-span: all; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 4px 0 6px;
+  font-family: var(--font-ui); font-size: .85rem; direction: rtl; }
+#pronWords .qf-wrap { flex-direction: column; align-items: stretch; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+#pronWords .qf-tabs, #pronWords .qf-pane, #pronWords .qf-row, #pronWords .qf-letters { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+#pronWords .qf-pane { flex-direction: column; align-items: stretch; }
+#pronWords .qf-phon { flex-direction: row; flex-wrap: wrap; align-items: center; }
+#pronWords button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+#pronWords .qf-letter { font-family: var(--font-he); font-size: 1.15rem; min-width: 2.2em; }
+#pronWords .qf-latin, #pronWords .qf-heard { font: inherit; padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; width: 12em; }
+#pronWords .qf-hint { color: var(--muted); font-size: .8rem; }
+#pronWords .qf-ipa { font: inherit; font-size: 1rem; padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; width: 9em; direction: ltr; }
+#pronWords .qf-lat { font-weight: 700; direction: ltr; }
+#pronWords .qf-tag b { background: var(--accent); color: #fff; border-radius: 6px; padding: 0 6px; }
+#pronWords button { font: inherit; font-size: .82rem; padding: 1px 7px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.pron-section { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 6px; }
+.pron-lbl { font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+.pron-pending { list-style: none; margin: 0 0 6px; padding: 0; }
+.pron-pending li { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; padding: 3px 0; border-bottom: 1px dashed var(--line); }
+.pron-pending li b { font-family: var(--font-he); }
+.pron-pending button { min-height: 24px; padding: 1px 8px; font-size: .8rem; }
+.pron textarea, .q-tools textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 1rem; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.pron-total { font-size: .8rem; color: var(--muted); }
+.pron-status { font-size: .8rem; color: var(--accent); min-height: 1.2em; margin-top: 4px; }
+.pron-toggle { font-size: .85rem; }
+@media (min-width: 1000px) {
+  body.pron-open main { margin-left: 500px; max-width: calc(100% - 520px); }
+}
+@media (max-width: 999px) {
+  .pron { left: 8px; right: 8px; width: auto; top: calc(var(--hdr, 100px) + 6px); bottom: 110px; }
+}
+@media (max-width: 640px) {
+  .topline { padding-top: 6px; }
+  h1 { font-size: 1.15rem; }
+  main { padding: 12px 12px; }
+  article.para { padding: 12px 12px; border-radius: 10px; }
+  .block { font-size: 1.18rem; }
+  h2.article-title { font-size: 1.35rem; }
+  button { padding: 6px 10px; }
+  #now { font-size: .8rem; }
+  body { padding-bottom: 140px; }
+}
+
+/* published read-only copy (publish_link.py) */
+.q-run, #qApplyBox, #pSendBox, .q-undo, .q-del, .pron-pending button, .q-fix, .q-fix-save, #fixText, #fixSave, #pron .pron-section:has(#fixText), .q-tools .pron-lbl:has(+ .q-fix), .susp-tools, .susp-status { display: none !important; }
+.q-ans { pointer-events: none; } .q-ans[aria-pressed="false"] { opacity: .45; }
+.ro-note { font-family: var(--font-ui); font-size: .82rem; color: var(--accent); background: var(--accent-soft); border-radius: 8px; padding: 6px 10px; margin: 6px 0; }
+/* "חשודות מהמגיה": collapsed, the heading opens it */
+.q-susp > :not(h3) { display: none; } .q-susp.ro-open > :not(h3) { display: block; }
+.q-susp > h3 { cursor: pointer; } .q-susp > h3::after { content: " ▸ לחץ להצגה"; font-size: .75em; color: var(--muted); font-weight: 400; }
+.q-susp.ro-open > h3::after { content: " ▾"; }
+#fpage .q-return, #fpage .q-ans, .q-heard input { pointer-events: none; }
+.f-tools, .f-rec, .f-myrec, .f-write { display: none !important; }   /* 9.11: "עוד 3", "הקלט", "ההקלטה שלי" need the local server */
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="topline">
+    <span class="draft">טיוטה פנימית</span>
+    <h1>זוהר פרשת תולדות</h1>
+    <span class="counters">
+      <button type="button" class="cnt" id="cntPending" title="התיקונים שלך: מה שהקלדת ועוד לא בוצע, ומה שמחכה לאישור שלך (לחיצה פותחת את הדף)">תיקונים ממתינים: <b>–</b></button>
+      <button type="button" class="cnt" id="cntQuestions" title="שאלות של Claude Code שעדיין בלי תשובה (שאלות Claude Code.tsv)">שאלות פתוחות: <b>–</b></button>
+      <button type="button" class="cnt" id="cntFailed" title="תיקונים שה'אחרי' שלהם עדיין לא נשמע טוב (לחיצה פותחת את הדף)">לא הצליח: <b>–</b></button>
+      <button type="button" class="cnt" id="pubBtn" hidden title="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
+      <span id="pubMsg" hidden style="font-size:.8rem"></span>
+    </span>
+  </div>
+  <div id="settings" class="settings" role="toolbar" aria-label="הגדרות">
+    <div class="ctl sel"><span class="lbl">שפה</span><div class="row seg" id="langRow"></div><select class="segsel" id="langSel" aria-label="שפה" title="שפה"></select></div>
+    <div class="ctl sel"><span class="lbl">מבטא</span><div class="row seg" id="accentRow"></div><select class="segsel" id="accentSel" aria-label="מבטא" title="מבטא"></select></div>
+    <div class="ctl sel"><span class="lbl">מצב</span><div class="row seg" id="modeRow"></div><select class="segsel" id="modeSel" aria-label="מצב השמעה" title="מצב השמעה"></select></div>
+    <div class="ctl"><label class="switch" title="השמע כותרות"><input type="checkbox" id="titlesToggle"><span class="full">השמע כותרות</span><span class="short">כותרות</span></label></div>
+    <div class="ctl speed"><span class="lbl">מהירות</span>
+      <div class="row"><button id="speedDown" title="לאט יותר" aria-label="לאט יותר">−</button><span class="val" id="speedVal">1×</span><button id="speedUp" title="מהר יותר" aria-label="מהר יותר">+</button></div>
+      <select class="speedsel" id="speedSel" aria-label="מהירות" title="מהירות"></select></div>
+    <div class="ctl listen">
+      <button type="button" class="listen-btn" id="listenBtn" aria-haspopup="true" aria-expanded="false" aria-controls="listenMenu" title="איפה אתה שומע?">
+        <span class="t" id="listenTitle">איפה אתה שומע?</span><span class="cur" id="listenCur"></span></button>
+      <div class="listen-menu" id="listenMenu" role="menu">
+        <div class="row" id="listenRow"></div>
+        <span class="hint">בחירה לתצוגה בלבד בשלב זה: השמע מתנגן כמו שהוא.</span>
+      </div>
+    </div>
+  </div>
+  <div class="notice" id="notice"></div>
+</header>
+
+<main id="content"></main>
+
+<footer class="player">
+  <div class="player-inner">
+    <div class="transport">
+      <button id="prevBtn">פסקה הקודמת</button>
+      <button id="playBtn">▶ הפעלה</button>
+      <button id="nextBtn">פסקה הבאה</button>
+    </div>
+    <div id="now">מוכן</div>
+    <button type="button" id="pronToggle" class="pron-toggle">דף הגייה</button>
+    <button type="button" id="pToggle" class="pron-toggle">תיקונים ממתינים</button>
+    <button type="button" id="qToggle" class="pron-toggle">שאלות</button>
+    <div class="progress"><div id="bar"></div></div>
+    <div class="player-msg" id="playerMsg"></div>
+  </div>
+</footer>
+
+<aside id="pron" class="pron" aria-label="דף הגייה">
+  <div class="pron-head"><b>דף הגייה</b> <button type="button" id="pronClose" class="pron-x" title="סגור">✕</button></div>
+  <div class="ro-note">עותק לקריאה בלבד: רואים ושומעים הכול, אבל תשובות ותיקונים נשמרים רק במחשב של יענקי.</div>
+  <div class="pron-where" id="pronWhere">לחץ על משפט, או נגן, ורשימת המילים שלו תופיע כאן.</div>
+  <ol id="pronWords" class="pron-words"></ol>
+  <div class="pron-section">
+    <div class="pron-lbl">תיקון חדש (שורה לכל תיקון: "12 ד", "12 P", "12 PL", "12 H", "12 H ל2")</div>
+    <textarea id="fixText" rows="3" placeholder="12 ד&#10;15 P"></textarea>
+    <div class="row"><button type="button" id="fixSave">שמור לתיקונים ממתינים</button><span class="pron-total" id="pronTotal"></span></div>
+    <div class="pron-status" id="pronStatus"></div>
+  </div>
+  <div class="pron-section">
+    <div class="pron-lbl">תיקונים ממתינים למשפט הזה <span id="pronCount"></span></div>
+    <ul id="pronPending" class="pron-pending"></ul>
+    <!-- 8.11 (שיחת האתר): the "תיקון שלי" items of this sentence that wait in שאלות Claude Code.tsv for Yanki's ear
+         ("לשמוע ולאשר" opens them in the questions page, where they are shown in blue) -->
+    <div class="pron-lbl" id="pronMineLbl" hidden>נשלחו, מחכים לאישור שלך בדף השאלות (בכחול) <span id="pronMineCount"></span></div>
+    <ul id="pronMine" class="pron-pending pron-mine" hidden></ul>
+  </div>
+</aside>
+
+<!-- 6.11: the page "שאלות Claude Code" - the questions of שאלות Claude Code.tsv (built by questions.py). The page only
+     writes the answer column, through serve.py (/api/questions). -->
+<section id="qpage" class="qpage" aria-label="שאלות" hidden>
+  <div class="q-inner">
+    <div class="q-head">
+      <h2>שאלות</h2>
+      <span class="q-head-btns">
+        <button type="button" id="qApplyTop" class="q-run" title="מחיל את כל התשובות (כן / לא) שסימנת: מילון, כללים, הפקה מחדש">אשר</button>
+        <button type="button" id="qClose" class="pron-x" title="סגור">✕ סגור</button>
+      </span>
+    </div>
+    <p class="q-sum" id="qSum"></p>
+    <p class="ro-note">עותק לקריאה בלבד: רואים ושומעים הכול, אבל תשובות ותיקונים נשמרים רק במחשב של יענקי.</p>
+    <p class="q-help">בכחול: שאלות שעלו מהתיקונים שלך ("תיקון שלי"); בשאר: השאלות של Claude Code. לכל פריט: שומעים "לפני" (כמו היום) ו"אחרי" (ההצעה), ובוחרים כן / לא / לא בטוח. הבחירה נשמרת מיד בקובץ; לחיצה נוספת על אותה תשובה מבטלת אותה. בסוף לוחצים "אשר": כל ה"כן" נכנסים למילון ולכללים והפסקאות מופקות מחדש, כל ה"לא" נועלים את הקריאה של היום, ו"לא בטוח" נשאר כאן.</p>
+    <div class="q-status" id="qStatus"></div>
+    <div id="qList"></div>
+    <!-- 8.11 ערב (2): what was already applied (questions_log.tsv), newest first, each with "בטל" (a revert request for the next "אשר") -->
+    <section class="q-sec q-done" id="qDone"></section>
+    <div class="q-apply" id="qApplyBox">
+      <button type="button" id="qApply" class="q-run big">אשר</button>
+      <span class="q-apply-hint" id="qApplyHint"></span>
+      <span class="q-run-msg" id="qRunMsg"></span>
+      <pre class="q-run-out" id="qRunOut" hidden></pre>
+    </div>
+  </div>
+</section>
+
+<!-- 8.11 (ערב): the page "תיקונים ממתינים" - the rows of תיקונים ממתינים.tsv: Yanki's corrections typed in the site, not sent
+     yet. "שלח" runs questions.py pending (through serve.py): every row gets BEFORE / AFTER and moves to the questions page as a
+     "תיקון שלי" item (blue). -->
+<section id="ppage" class="qpage ppage" aria-label="תיקונים ממתינים" hidden>
+  <div class="q-inner">
+    <div class="q-head">
+      <h2>תיקונים ממתינים</h2>
+      <span class="q-head-btns">
+        <button type="button" id="pSendTop" class="q-run" title="מכין לכל תיקון 'לפני' ו'אחרי' ומעביר אותו לדף השאלות (בכחול)">שלח</button>
+        <button type="button" id="pClose" class="pron-x" title="סגור">✕ סגור</button>
+      </span>
+    </div>
+    <p class="q-sum" id="pSum"></p>
+    <p class="ro-note">עותק לקריאה בלבד: רואים ושומעים הכול, אבל תשובות ותיקונים נשמרים רק במחשב של יענקי.</p>
+    <p class="q-help">התיקונים שהקלדת בדף ההגייה (או ליד פריט בדף השאלות) ועדיין לא נשלחו. "מחק" מוחק תיקון שהוקלד בטעות. "שלח" מכין לכל תיקון "לפני" ו"אחרי" של המשפט המלא ומעביר אותו לדף "שאלות Claude Code", בכחול, ושם שומעים ומאשרים.</p>
+    <div class="q-status" id="pStatus"></div>
+    <div id="pList"></div>
+    <!-- 8.11 ערב (2): the corrections already sent (the "תיקון שלי" items of the questions file), with their state -->
+    <section class="q-sec q-sent" id="pSent"></section>
+    <div class="q-apply" id="pSendBox">
+      <button type="button" id="pSend" class="q-run big">שלח</button>
+      <span class="q-apply-hint" id="pSendHint"></span>
+      <span class="q-run-msg" id="pRunMsg"></span>
+      <pre class="q-run-out" id="pRunOut" hidden></pre>
+    </div>
+  </div>
+</section>
+
+<!-- 9.11 (צ'אט התיקונים): the page "לא הצליח" - corrections whose AFTER still sounded wrong (לא הצליח.tsv, written by
+     questions.py decide). For each: the sentence, the word, what Yanki heard, the numbered word list, and 3-5 options with
+     their AFTER; "זאת" / "אף אחת" / "החזר לממתינים" write only the column "בחירה" (serve.py /api/failed); "אשר" applies. -->
+<section id="fpage" class="qpage" aria-label="לא הצליח" hidden>
+  <div class="q-inner">
+    <div class="q-head">
+      <h2>לא הצליח</h2>
+      <span class="q-head-btns">
+        <button type="button" id="fApplyTop" class="q-run" title="מחיל את הבחירות (וגם את התשובות בדף השאלות)">אשר</button>
+        <button type="button" id="fClose" class="pron-x" title="סגור">✕ סגור</button>
+      </span>
+    </div>
+    <p class="q-sum" id="fSum"></p>
+    <p class="q-help">מילים שתיקנת באותיות לטיניות ו"האחרי" שלהן עדיין לא נשמע טוב. לכל פריט עד 4 אפשרויות: 3 הקראות אקראיות של המילה (בכל אחת שינוי אקראי בהגייה ובהטעמה, ובאקראיות של המנוע, שנשמרת), ורביעית "מההקלטה שלך" (רק אחרי שהקלטת ולחצת "אשר" ליד המיקרופון). כל אפשרות כמו שאלה: ▶ לפני, ▶ אחרי (המילה ו-3 המילים שלפניה), כן, לא. "כן" אפשר רק על אפשרות אחת; "לא" על כולן = אף אחת. "✏️ כתוב IPA": תיבה עם ה-IPA של היום, לתיקון (ˈ ː ʔ בכפתורים); "הפק" מוסיף אפשרות כזאת, בלי אקראיות (כל הפקה מחליפה את הקודמת). "🎤 הקלט": אמור את המילה ולחץ "עצור"; אפשר לשמוע את ההקלטה ולהקליט שוב, ורק "אשר" שולח אותה (ההקלטה עצמה לא נכנסת לאודיו; את ה-IPA אפשר לתקן ו"הפק שוב"). "אשר" בראש הדף: האפשרות שסימנת "כן" עוברת לדף השאלות עם אותו לפני/אחרי בדיוק, ושם "כן" מחיל אותה באתר כמו ששמעת. "אף אחת": אפשרויות חזקות יותר (בפעם השנייה "לא נפתר" ורישום ביומן טעויות מנוע). "החזר לממתינים" מחזיר את התיקון כפי שהקלדת.</p>
+    <div class="q-status" id="fStatus"></div>
+    <div id="fList"></div>
+  </div>
+</section>
+
+<script src="catalog.js"></script>
+<script src="words.js"></script>
+<script>
+(() => {
+'use strict';
+// published read-only copy (publish_link.py): the local server (serve.py) is replaced by static snapshots in data/
+window.PUBLISHED_READONLY = true;
+const _realFetch = window.fetch.bind(window);
+window.fetch = (url, opts) => {
+  const u = typeof url === 'string' ? url : (url && url.url) || '';
+  const i = u.indexOf('/api/');
+  if (i >= 0) {
+    if (opts && opts.method && opts.method.toUpperCase() !== 'GET') return Promise.reject(new Error('העותק המפורסם הוא לקריאה בלבד'));
+    return _realFetch('data/' + u.slice(i + 5).split(/[?#]/)[0] + '.json', { cache: 'no-store' });
+  }
+  return _realFetch(url, opts);
+};
+document.addEventListener('click', e => { const h = e.target.closest('.q-susp > h3'); if (h) h.parentElement.classList.toggle('ro-open'); });
+const CAT = window.CATALOG;
+const IS_FILE = location.protocol === 'file:';
+const KEY = 'zohar-toldot-site-v1';
+const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+// 5.11: the translation is called "תרגום" everywhere the user sees it (the internal code stays "he");
+// 'pair' = sentence by sentence: the Aramaic sentence, then its translation (the organization's sentence pairs, N <-> N).
+// 5.11: the user sees "לשון הזוהר" for the Aramaic (code 'ar') and "תרגום" for the translation (code 'he').
+const LANG_OPTS = [['ar', 'לשון הזוהר'], ['he', 'תרגום'], ['both', 'פסוק בפסוק'], ['pair', 'לשון הזוהר - עם תרגום מיידי']];
+const PAD_BEFORE = 0.05, PAD_AFTER = 0.15;     // safety margins around a sentence's timings (both sit inside the silence between sentences)
+const MODE_OPTS = [['sentence', 'משפט אחד'], ['one', 'פסקה אחת'], ['article', 'מאמר שלם'], ['all', 'ברצף']];   // 5.11: 'sentence' = a click plays that sentence only
+// "איפה אתה שומע?" - the heading and the modes exactly as on ממלכת הזוהר (page זוהר-אודיו, 5.11), in their order;
+// the default there is "באוזניות בלימוד מרוכז". Display only: the choice is shown and remembered, the sound is not changed.
+const LISTEN_MODES = [
+  ['sleep', '🌙', 'באוזניות לפני השינה'],
+  ['focus', '🎧', 'באוזניות בלימוד מרוכז'],
+  ['car', '🚗', 'ברכב'],
+  ['walk', '🚶', 'בהליכה ברחוב'],
+  ['bus', '🚌', 'באוטובוס וברכבת'],
+  ['home', '🏠', 'בבית, ברמקול'],
+  ['hall', '🏛', 'בבית המדרש ובשיעור בציבור'],
+  ['shop', '🏪', 'בחנות ובמקום העבודה'],
+  ['bg', '🔈', 'ברקע, בעבודה שקטה'],
+  ['hard', '👂', 'לשמיעה מוחלשת'],
+  ['drill', '🔁', 'לחזרה ושינון'],
+];
+const LISTEN_DEFAULT = 'focus';
+const DEFAULTS = { lang: 'both', accent: 'sephardi', mode: 'one', titles: false, speed: 1, listen: LISTEN_DEFAULT, para: null };
+
+// ---------- remembered choices (localStorage, never required) ----------
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); return Object.assign({}, DEFAULTS, s || {}); }
+  catch (e) { return Object.assign({}, DEFAULTS); }
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* private mode etc. */ } }
+const state = load();
+if (!SPEEDS.includes(state.speed)) state.speed = 1;
+if (!LISTEN_MODES.some(m => m[0] === state.listen)) state.listen = LISTEN_DEFAULT;
+delete state.eq; delete state.preset;                       // the old equalizer settings (removed 5.11) are ignored
+if (!CAT.accents.some(a => a.code === state.accent)) state.accent = 'sephardi';   // e.g. a saved "polish" (removed 5.11)
+if (!LANG_OPTS.some(o => o[0] === state.lang)) state.lang = 'both';
+if (!MODE_OPTS.some(o => o[0] === state.mode)) state.mode = 'one';
+
+// ---------- catalog helpers ----------
+const PARAS = [];
+CAT.articles.forEach((a, ai) => a.paragraphs.forEach((p, pi) => PARAS.push({ a, p, ai, pi, idx: PARAS.length })));
+const byId = Object.fromEntries(PARAS.map(x => [x.p.id, x]));
+const hasFile = s => !!(s && s.file);
+const audioOf = (p, lang, accent) => { const s = p.audio && p.audio[lang] && p.audio[lang][accent]; return hasFile(s) ? s : null; };
+const titleAudioOf = (p, accent) => { const s = p.title_audio && p.title_audio.he && p.title_audio.he[accent]; return hasFile(s) ? s : null; };
+const langHasAudio = (lang, accent) => PARAS.some(x => audioOf(x.p, lang, accent));
+const accentHasAudio = accent => CAT.languages.some(l => langHasAudio(l.code, accent)) || PARAS.some(x => titleAudioOf(x.p, accent));
+const langsOf = () => (state.lang === 'both' || state.lang === 'pair') ? ['ar', 'he'] : [state.lang];
+const accentName = code => (CAT.accents.find(a => a.code === code) || {}).name || code;
+const langName = code => code === 'ar' ? 'לשון הזוהר' : 'תרגום';
+
+// ---------- audio source: files from a server, the embedded pack when opened as a local file ----------
+// The pack (audio_pack.js) is needed only when the sound goes through Web Audio (Chrome mutes file:// media there).
+// Since 5.11 nothing is processed, so the pack is not loaded; set USE_PACK_WHEN_FILE = true when Web Audio is connected again.
+const USE_PACK_WHEN_FILE = false;
+let packLoaded = false;
+const urlCache = {};
+const packReady = new Promise(resolve => {
+  if (!IS_FILE || !USE_PACK_WHEN_FILE) return resolve(false);
+  const s = document.createElement('script');
+  s.src = 'audio_pack.js';
+  s.onload = () => { packLoaded = !!window.AUDIO_PACK; resolve(packLoaded); };
+  s.onerror = () => resolve(false);
+  document.head.appendChild(s);
+});
+async function srcFor(file) {
+  if (!IS_FILE) return (CAT.audio_dir || 'audio') + '/' + file;
+  await packReady;
+  if (!packLoaded) return (CAT.audio_dir || 'audio') + '/' + file;   // no pack: plays, but the equalizer is bypassed
+  if (urlCache[file]) return urlCache[file];
+  const data = window.AUDIO_PACK[file];
+  if (!data) return null;
+  const blob = await (await fetch(data)).blob();
+  return (urlCache[file] = URL.createObjectURL(blob));
+}
+
+// ---------- rendering ----------
+const content = document.getElementById('content');
+function render() {
+  const frag = document.createDocumentFragment();
+  for (const a of CAT.articles) {
+    const sec = document.createElement('section'); sec.className = 'article';
+    const h2 = document.createElement('h2'); h2.className = 'article-title'; h2.textContent = a.title_display || a.title; sec.appendChild(h2);
+    if (a.summary) { const ps = document.createElement('p'); ps.className = 'summary'; ps.textContent = a.summary; sec.appendChild(ps); }
+    for (const p of a.paragraphs) {
+      const art = document.createElement('article'); art.className = 'para'; art.dataset.id = p.id;
+      const head = document.createElement('div'); head.className = 'para-head';
+      const letter = document.createElement('span'); letter.className = 'letter'; letter.textContent = p.letter; letter.title = 'אות הפסקה (מוצגת בלבד)';
+      const h3 = document.createElement('h3'); h3.className = 'title'; h3.dataset.id = p.id; h3.textContent = p.title.display; h3.title = 'לחיצה: השמעת הכותרת והפסקה';
+      head.append(letter, h3); art.appendChild(head);
+      for (const lang of ['ar', 'he']) {
+        const block = document.createElement('div'); block.className = 'block ' + lang; block.dataset.lang = lang;
+        const lbl = document.createElement('span'); lbl.className = 'lang-lbl'; lbl.textContent = langName(lang); block.appendChild(lbl);
+        const sents = (p.text[lang] && p.text[lang].sentences) || [];
+        sents.forEach((s, k) => {
+          const span = document.createElement('span'); span.className = 'sent'; span.dataset.id = p.id; span.dataset.lang = lang; span.dataset.i = String(s.i); span.dataset.view = 'block';
+          span.textContent = s.display; block.appendChild(span);
+          if (k < sents.length - 1) block.appendChild(document.createTextNode(' '));
+        });
+        art.appendChild(block);
+      }
+      // the sentence pairs (mode 'משפט בארמית ואז תרגום'): sentence N in Aramaic above its translation N
+      const pairs = document.createElement('div'); pairs.className = 'pairs';
+      const nAr = p.text.ar.sentences.length, nHe = p.text.he.sentences.length;
+      for (let k = 0; k < Math.max(nAr, nHe); k++) {
+        const pair = document.createElement('div'); pair.className = 'pair';
+        for (const lang of ['ar', 'he']) {
+          const s = p.text[lang].sentences[k]; if (!s) continue;
+          const span = document.createElement('span'); span.className = 'sent ' + lang; span.dataset.id = p.id; span.dataset.lang = lang; span.dataset.i = String(s.i); span.dataset.view = 'pair';
+          if (lang === 'he' && s.translation_same) {               // the catalog says: almost the same words as the Zohar's - not played in this mode
+            span.classList.add('same'); span.title = `התרגום כמעט זהה ללשון הזוהר (${s.similarity}%) ואינו מושמע במצב הזה`;
+          }
+          span.textContent = s.display; pair.appendChild(span);
+        }
+        pairs.appendChild(pair);
+      }
+      art.appendChild(pairs);
+      sec.appendChild(art);
+    }
+    frag.appendChild(sec);
+  }
+  content.innerHTML = ''; content.appendChild(frag);
+}
+const paraEl = id => content.querySelector(`article.para[data-id="${id}"]`);
+const titleEl = id => content.querySelector(`h3.title[data-id="${id}"]`);
+const sentEl = (id, lang, i) => content.querySelector(`.sent[data-id="${id}"][data-lang="${lang}"][data-i="${i}"][data-view="${state.lang === 'pair' ? 'pair' : 'block'}"]`);
+
+// ---------- controls ----------
+// 6.11: short labels for the narrow row (the full name stays as the tooltip)
+const SHORT = { ar: 'זוהר', he: 'תרגום', both: 'פסוק בפסוק', pair: 'תרגום מיידי', sentence: 'משפט', one: 'פסקה', article: 'מאמר', all: 'ברצף' };
+function segButtons(rowId, opts, get, set, soonFn, selId) {
+  const row = document.getElementById(rowId); row.innerHTML = '';
+  const sel = selId && document.getElementById(selId); if (sel) sel.innerHTML = '';
+  for (const [code, name] of opts) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.value = code; b.title = name;
+    const full = document.createElement('span'); full.className = 'full'; full.textContent = name;
+    const short = document.createElement('span'); short.className = 'short'; short.textContent = SHORT[code] || name;
+    b.append(full, short);
+    const soon = soonFn ? soonFn(code) : false;
+    if (soon) { b.classList.add('soon'); const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = 'בקרוב'; b.appendChild(badge); b.title = name + ' - אין עדיין הקלטה'; }
+    b.setAttribute('aria-pressed', String(get() === code));
+    b.addEventListener('click', () => { set(code); refreshControls(); save(); });
+    row.appendChild(b);
+    if (sel) { const o = document.createElement('option'); o.value = code; o.textContent = (SHORT[code] || name) + (soon ? ' (בקרוב)' : ''); o.title = name; sel.appendChild(o); }
+  }
+  if (sel) { sel.value = get(); sel.onchange = () => { set(sel.value); refreshControls(); save(); }; }
+}
+// the one settings row (6.11): never wraps; when it does not fit, narrow it step by step
+function fitSettings() {
+  const s = document.getElementById('settings');
+  s.classList.remove('lv1', 'lv2', 'lv3');
+  for (const lv of ['lv1', 'lv2', 'lv3']) {
+    if (s.scrollWidth <= s.clientWidth + 1) break;
+    s.classList.add(lv);
+  }
+  document.documentElement.style.setProperty('--hdr', document.querySelector('header.top').offsetHeight + 'px');
+  placeListenMenu();
+}
+function refreshControls() {
+  segButtons('langRow', LANG_OPTS, () => state.lang, v => { state.lang = v; onLangOrAccentChanged(); },
+    code => code === 'both' ? !(langHasAudio('ar', state.accent) || langHasAudio('he', state.accent))
+         : code === 'pair' ? !(langHasAudio('ar', state.accent) && langHasAudio('he', state.accent))
+         : !langHasAudio(code, state.accent), 'langSel');
+  segButtons('accentRow', CAT.accents.map(a => [a.code, a.name]), () => state.accent, v => { state.accent = v; onLangOrAccentChanged(); },
+    code => !accentHasAudio(code), 'accentSel');
+  segButtons('modeRow', MODE_OPTS, () => state.mode, v => { state.mode = v; }, null, 'modeSel');
+  document.getElementById('titlesToggle').checked = !!state.titles;
+  document.getElementById('speedVal').textContent = state.speed + '×';
+  const ss = document.getElementById('speedSel');                 // the same speeds as a compact box (narrow screens, 6.11)
+  if (ss.options.length !== SPEEDS.length) { ss.innerHTML = SPEEDS.map(v => `<option value="${v}">${v}×</option>`).join(''); ss.onchange = () => setSpeed(+ss.value); }
+  ss.value = String(state.speed);
+  document.getElementById('speedDown').disabled = SPEEDS.indexOf(state.speed) === 0;
+  document.getElementById('speedUp').disabled = SPEEDS.indexOf(state.speed) === SPEEDS.length - 1;
+  document.body.classList.remove('lang-ar', 'lang-he', 'lang-both', 'lang-pair');
+  document.body.classList.add('lang-' + state.lang);
+  const missing = langsOf().filter(l => !langHasAudio(l, state.accent));
+  const notice = document.getElementById('notice');
+  notice.textContent = missing.length
+    ? `אין עדיין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)} (בקרוב)` +
+      (missing.length < langsOf().length ? ` - מנוגנת ${langName(langsOf().find(l => !missing.includes(l)))} בלבד.` : '.')
+    : '';
+  refreshListenUi();
+  fitSettings();
+}
+function refreshListenUi() {
+  const row = document.getElementById('listenRow'); row.innerHTML = '';
+  for (const [code, icon, name] of LISTEN_MODES) {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.value = code;
+    const ic = document.createElement('span'); ic.className = 'ic'; ic.textContent = icon;
+    b.append(ic, document.createTextNode(' ' + name));
+    b.setAttribute('aria-pressed', String(state.listen === code));
+    b.addEventListener('click', () => { state.listen = code; applyListeningMode(code); refreshControls(); save(); listenMenu(false); });
+    row.appendChild(b);
+  }
+  const lm = LISTEN_MODES.find(m => m[0] === state.listen) || LISTEN_MODES[1];
+  const cur = document.getElementById('listenCur'); cur.textContent = '';
+  const ci = document.createElement('span'); ci.className = 'ic'; ci.textContent = lm[1];
+  const cn = document.createElement('span'); cn.className = 'nm'; cn.textContent = ' ' + lm[2];
+  cur.append(ci, cn);
+  document.getElementById('listenBtn').title = 'איפה אתה שומע? ' + lm[2];
+}
+// the drop-down of "איפה אתה שומע?" (6.11): the heading button opens/closes it; a choice or a click outside closes it
+function listenMenu(open) {
+  const m = document.getElementById('listenMenu'), b = document.getElementById('listenBtn');
+  m.classList.toggle('open', open); b.setAttribute('aria-expanded', String(open));
+  if (open) placeListenMenu();
+}
+function placeListenMenu() {
+  const m = document.getElementById('listenMenu');
+  if (!m.classList.contains('open')) return;
+  const r = document.getElementById('listenBtn').getBoundingClientRect(), vw = window.innerWidth;
+  const pl = document.querySelector('footer.player'), vh = pl ? pl.getBoundingClientRect().top : window.innerHeight;   // stay above the player bar
+  const w = Math.min(290, vw - 16);
+  let right = vw - r.right;                                           // RTL: the menu's right edge under the button's right edge
+  right = Math.max(8, Math.min(right, vw - w - 8));                   // ... but always inside the screen
+  m.style.right = right + 'px'; m.style.left = 'auto'; m.style.width = w + 'px';
+  const below = vh - r.bottom - 8, above = r.top - 8;
+  if (below >= 220 || below >= above) { m.style.top = (r.bottom + 4) + 'px'; m.style.bottom = 'auto'; m.style.maxHeight = (below - 4) + 'px'; }
+  else { m.style.bottom = (window.innerHeight - r.top + 4) + 'px'; m.style.top = 'auto'; m.style.maxHeight = (above - 4) + 'px'; }
+}
+document.getElementById('listenBtn').addEventListener('click', () => listenMenu(!document.getElementById('listenMenu').classList.contains('open')));
+document.addEventListener('click', e => {
+  const m = document.getElementById('listenMenu');
+  if (m.classList.contains('open') && !m.contains(e.target) && !document.getElementById('listenBtn').contains(e.target)) listenMenu(false);
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') listenMenu(false); });
+window.addEventListener('resize', fitSettings);
+document.addEventListener('scroll', placeListenMenu, true);
+function applyListeningMode(code) {
+  // RESERVED FOR A FUTURE HOOKUP (5.11): the listening mode is display only. When the audio processing per mode is decided,
+  // connect it here (Web Audio graph on `audio`, or a pre-made version per mode). Today nothing changes in the sound.
+}
+function onLangOrAccentChanged() {
+  if (playing && cur) startPara(cur.idx); else if (cur) { cur = null; clearActive(); }
+}
+document.getElementById('titlesToggle').addEventListener('change', e => { state.titles = e.target.checked; refreshControls(); save(); });
+document.getElementById('speedDown').addEventListener('click', () => setSpeed(SPEEDS[Math.max(0, SPEEDS.indexOf(state.speed) - 1)]));
+document.getElementById('speedUp').addEventListener('click', () => setSpeed(SPEEDS[Math.min(SPEEDS.length - 1, SPEEDS.indexOf(state.speed) + 1)]));
+function setSpeed(v) { state.speed = v; applySpeed(); refreshControls(); save(); }
+
+// ---------- player ----------
+const audio = new Audio();
+// 9.11: the progress bar seeks: click or drag on it moves inside the file that is playing (a sentence segment stays
+// inside its own start / end). The bar runs left to right, like the time.
+(() => {
+  const bar = document.querySelector('.progress');
+  let drag = false;
+  const seekTo = ev => {
+    if (!audio.duration) return;
+    const r = bar.getBoundingClientRect();
+    let t = Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)) * audio.duration;
+    const it = typeof cur !== 'undefined' && cur && cur.items && cur.items[cur.k];
+    if (it && it.endTime != null) t = Math.min(Math.max(t, it.startTime || 0), it.endTime - 0.05);
+    try { audio.currentTime = t; } catch (e) {}
+    document.getElementById('bar').style.width = (100 * t / audio.duration) + '%';
+  };
+  bar.addEventListener('pointerdown', ev => { drag = true; bar.classList.add('dragging'); bar.setPointerCapture(ev.pointerId); seekTo(ev); });
+  bar.addEventListener('pointermove', ev => { if (drag) seekTo(ev); });
+  const end = () => { drag = false; bar.classList.remove('dragging'); };
+  bar.addEventListener('pointerup', end); bar.addEventListener('pointercancel', end);
+})();
+audio.preload = 'auto';
+function applySpeed() {
+  audio.playbackRate = state.speed;
+  audio.preservesPitch = true; audio.mozPreservesPitch = true; audio.webkitPreservesPitch = true;
+}
+// No Web Audio processing since 5.11 (the equalizer was replaced by the display-only "איפה אתה שומע?"): the <audio>
+// element plays the file as it is. A future hookup goes into applyListeningMode().
+
+let cur = null;          // { idx, items, k }
+let playing = false;
+let token = 0;
+let activeEl = null;
+let rafId = 0;
+function itemsForPara(x, opts) {
+  opts = opts || {};
+  const p = x.p, items = [], missing = [];
+  const t = titleAudioOf(p, state.accent);
+  if ((state.titles || opts.forceTitle) && !opts.skipTitle) { if (t) items.push({ x, kind: 'title', lang: 'he', a: t, startTime: 0 }); }
+  if (opts.onlySentence) {                                  // mode 'משפט אחד': one sentence segment (the pair-mode division), then stop
+    const { lang, i } = opts.onlySentence, a = audioOf(p, lang, state.accent);
+    const s = a && a.timings.sentences.find(z => z.i === i);
+    if (!s) missing.push(lang);
+    else items.push({ x, kind: 'text', lang, a, seg: a.timings.sentences.indexOf(s), startTime: Math.max(0, s.start - PAD_BEFORE), endTime: s.end + PAD_AFTER });
+    return { items, missing };
+  }
+  if (state.lang === 'pair') {
+    // sentence pairs: Aramaic sentence k, then translation k (segments of the two paragraph files, by the timings)
+    const ar = audioOf(p, 'ar', state.accent), he = audioOf(p, 'he', state.accent);
+    if (!ar) missing.push('ar'); if (!he) missing.push('he');
+    const n = Math.max(ar ? ar.timings.sentences.length : 0, he ? he.timings.sentences.length : 0);
+    for (let k = opts.startPair || 0; k < n; k++) {
+      for (const [lang, a] of [['ar', ar], ['he', he]]) {
+        const s = a && a.timings.sentences[k];
+        if (!s) continue;
+        if (lang === 'he' && ar && (p.text.he.sentences[k] || {}).translation_same) continue;   // "תרגום זהה": only the Zohar's sentence is played
+        items.push({ x, kind: 'text', lang, a, seg: k, startTime: Math.max(0, s.start - PAD_BEFORE), endTime: s.end + PAD_AFTER });
+      }
+    }
+    return { items, missing };
+  }
+  const langs = langsOf();
+  const from = opts.startLang ? langs.indexOf(opts.startLang) : 0;
+  langs.forEach((l, i) => {
+    if (i < from) return;
+    const a = audioOf(p, l, state.accent);
+    if (a) items.push({ x, kind: 'text', lang: l, a, startTime: l === opts.startLang ? (opts.startTime || 0) : 0 });
+    else missing.push(l);
+  });
+  return { items, missing };
+}
+function nextParaIdx(i) {
+  if (state.mode === 'one' || state.mode === 'sentence') return null;
+  const n = i + 1;
+  if (n >= PARAS.length) return null;
+  if (state.mode === 'article' && PARAS[n].ai !== PARAS[i].ai) return null;
+  return n;
+}
+function markCurrent(idx) {
+  content.querySelectorAll('article.para.current').forEach(e => e.classList.remove('current'));
+  const el = paraEl(PARAS[idx].p.id); if (el) el.classList.add('current');
+  state.para = PARAS[idx].p.id; save();
+}
+function startPara(idx, opts) {
+  const { items, missing } = itemsForPara(PARAS[idx], opts);
+  cur = { idx, items, k: -1 };
+  markCurrent(idx);
+  if (!items.length) {
+    msg(`אין הקלטה לפסקה ${PARAS[idx].p.letter} (${missing.map(langName).join(', ')}) - בקרוב`);
+    const n = nextParaIdx(idx);
+    if (n == null) { stop(); return; }
+    startPara(n); return;
+  }
+  nextItem();
+}
+let gapStart = 0, lastGapMs = null;                     // the silence between two sentence segments (measured, for checking)
+const prefetched = {};
+function prefetch(url) {                                 // warm the browser cache with the next file, so the switch is quick
+  if (!url || prefetched[url]) return;
+  const a = new Audio(); a.preload = 'auto'; a.src = url; prefetched[url] = a;
+}
+function nextItem() {
+  gapStart = performance.now();
+  cur.k++;
+  if (cur.k >= cur.items.length) {
+    const n = nextParaIdx(cur.idx);
+    if (n == null) { stop(true); return; }
+    startPara(n); return;
+  }
+  playItem(cur.items[cur.k]);
+}
+async function playItem(it) {
+  const my = ++token;
+  const url = await srcFor(it.a.file);
+  if (my !== token) return;
+  if (!url) { msg('קובץ חסר: ' + it.a.file); nextItem(); return; }
+  if (audio.src !== url && !(audio.src && audio.src.endsWith(url))) audio.src = url;      // same file (next segment): just seek
+  applySpeed();
+  await new Promise(res => { if (audio.readyState >= 1) res(); else audio.addEventListener('loadedmetadata', res, { once: true }); });
+  if (my !== token) return;
+  if (it.endTime != null && audio.duration) it.endTime = Math.min(it.endTime, audio.duration);
+  try { audio.currentTime = it.startTime || 0; } catch (e) {}
+  const nx = cur && cur.items[cur.k + 1];
+  if (nx && nx.a.file !== it.a.file) srcFor(nx.a.file).then(prefetch);
+  try { await audio.play(); } catch (e) { msg('הדפדפן לא אישר השמעה: ' + e.message); playing = false; updateUi(); return; }
+  lastGapMs = gapStart ? Math.round(performance.now() - gapStart) : null;
+  playing = true; msg('');
+  updateUi(); scheduleTick();
+}
+function segmentDone() {
+  // a sentence segment (pair mode) ends at its endTime, not at the end of the file
+  const it = cur && cur.items[cur.k];
+  if (!it || it.endTime == null || it.done || !playing) return false;
+  if (audio.currentTime >= it.endTime) { it.done = true; nextItem(); return true; }
+  return false;
+}
+audio.addEventListener('timeupdate', segmentDone);
+audio.addEventListener('ended', () => { const it = cur && cur.items[cur.k]; if (cur && !(it && it.done)) { if (it) it.done = true; nextItem(); } });
+audio.addEventListener('error', () => { if (cur && playing) { msg('שגיאה בטעינת ' + (cur.items[cur.k] && cur.items[cur.k].a.file)); nextItem(); } });
+function stop(finished) {
+  playing = false; token++;
+  audio.pause();
+  if (finished) { msg('הסתיים.'); }
+  cur = null; clearActive(); updateUi();
+}
+function pause() { playing = false; audio.pause(); updateUi(); }
+async function play() {
+  if (cur && audio.src && !audio.ended) {
+    try { await audio.play(); playing = true; updateUi(); scheduleTick(); } catch (e) { msg(e.message); }
+    return;
+  }
+  const idx = cur ? cur.idx : (state.para && byId[state.para] ? byId[state.para].idx : 0);
+  if (state.mode === 'sentence') { startPara(idx, { skipTitle: true, onlySentence: { lang: langsOf()[0], i: 0 } }); return; }
+  startPara(idx);
+}
+function currentIdx() { return cur ? cur.idx : (state.para && byId[state.para] ? byId[state.para].idx : 0); }
+function jump(delta) {
+  const idx = Math.min(PARAS.length - 1, Math.max(0, currentIdx() + delta));
+  if (playing) { startPara(idx); return; }
+  token++; audio.pause(); cur = null; clearActive();
+  markCurrent(idx);
+  const el = paraEl(PARAS[idx].p.id); if (el) scrollToBand(el);
+  updateUi();
+}
+document.getElementById('playBtn').addEventListener('click', () => { playing ? pause() : play(); });
+document.getElementById('prevBtn').addEventListener('click', () => jump(-1));
+document.getElementById('nextBtn').addEventListener('click', () => jump(1));
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !/INPUT|BUTTON|SELECT|TEXTAREA|SUMMARY/.test(e.target.tagName)) { e.preventDefault(); playing ? pause() : play(); }
+});
+content.addEventListener('click', e => {
+  const s = e.target.closest('.sent');
+  if (s) {
+    const x = byId[s.dataset.id], lang = s.dataset.lang, i = Number(s.dataset.i);
+    pronShow(x.p.id, lang, i);                                                                       // the panel shows the clicked sentence at once
+    if (state.mode === 'sentence') { startPara(x.idx, { skipTitle: true, onlySentence: { lang, i } }); return; }   // this sentence only
+    if (state.lang === 'pair') { startPara(x.idx, { skipTitle: true, startPair: i }); return; }      // from the start of its pair: Aramaic first
+    const a = audioOf(x.p, lang, state.accent);
+    if (!a) { msg(`אין עדיין הקלטה ב${langName(lang)} במבטא ${accentName(state.accent)} (בקרוב)`); return; }
+    const t = (a.timings.sentences.find(z => z.i === i) || { start: 0 }).start;
+    startPara(x.idx, { skipTitle: true, startLang: lang, startTime: t });
+    return;
+  }
+  const h = e.target.closest('h3.title');
+  if (h) { const x = byId[h.dataset.id]; pronShow(x.p.id, 'he', 'title'); if (titleAudioOf(x.p, state.accent)) startPara(x.idx, { forceTitle: true }); else startPara(x.idx); }
+});
+
+// ---------- highlighting & scrolling ----------
+function clearActive() { if (activeEl) activeEl.classList.remove('active'); activeEl = null; }
+function setActive(el) {
+  if (el === activeEl) return;
+  clearActive();
+  activeEl = el;
+  if (!el) return;
+  el.classList.add('active');
+  scrollToBand(el);
+  pronShow(el.dataset.id, el.dataset.lang || 'he', el.classList.contains('title') ? 'title' : Number(el.dataset.i));
+}
+function scrollToBand(el) {
+  // keep the element inside the band between the sticky header and the player bar (scrollIntoView ignores them)
+  const r = el.getBoundingClientRect();
+  const top = document.querySelector('header.top').offsetHeight + 8, bottom = window.innerHeight - document.querySelector('footer.player').offsetHeight - 8;
+  if (r.top >= top && r.bottom <= bottom) return;
+  const target = r.height > bottom - top ? window.scrollY + r.top - top : window.scrollY + r.top - (top + (bottom - top) / 2) + r.height / 2;
+  window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+}
+function tick() {
+  rafId = 0;
+  if (!cur || cur.k < 0 || !cur.items[cur.k]) return;
+  const it = cur.items[cur.k];
+  if (segmentDone()) return;
+  if (it.kind === 'title') setActive(titleEl(it.x.p.id));
+  else if (it.seg != null) setActive(sentEl(it.x.p.id, it.lang, it.a.timings.sentences[it.seg].i));
+  else {
+    const t = audio.currentTime, ss = it.a.timings.sentences;
+    let pick = ss[0];
+    for (const s of ss) if (s.start <= t + 0.02) pick = s;
+    setActive(pick ? sentEl(it.x.p.id, it.lang, pick.i) : null);
+  }
+  const bar = document.getElementById('bar');
+  bar.style.width = audio.duration ? (100 * audio.currentTime / audio.duration) + '%' : '0';
+  if (playing) scheduleTick();
+}
+function scheduleTick() { if (!rafId) rafId = requestAnimationFrame(tick); }
+
+// ---------- ui ----------
+function msg(t) { document.getElementById('playerMsg').textContent = t || ''; }
+function updateUi() {
+  document.getElementById('playBtn').textContent = playing ? '⏸ עצירה' : '▶ הפעלה';
+  const now = document.getElementById('now');
+  const idx = currentIdx(); const x = PARAS[idx];
+  const it = cur && cur.items[cur.k];
+  const what = it ? (it.kind === 'title' ? 'כותרת' : langName(it.lang) + (it.seg != null ? ` · משפט ${it.seg + 1}` : '')) : '';
+  now.innerHTML = x ? `<b>${x.a.title_display || x.a.title}</b> · פסקה <b>${x.p.letter}</b>${what ? ' · ' + what : ''}${playing ? '' : ' · מושהה'}` : 'מוכן';
+  if (!playing) document.getElementById('bar').style.width = audio.duration ? (100 * audio.currentTime / audio.duration) + '%' : '0';
+}
+
+// ---------- the pronunciation panel ----------
+const WORDS = window.WORDS || {};
+const API = IS_FILE ? 'http://127.0.0.1:8787' : '';           // opened as a file: talk to the server if it runs (הפעל את אתר תולדות.bat)
+const TSV_LANG = { ar: 'ארמית', he: 'תרגום' };               // the language names in תיקונים ממתינים.tsv
+let pronKey = null;                                          // {pid, lang, i|'title'}
+let pending = [], pendingOk = false, lastPendingCount = null, reloadWhenIdle = false;
+let runActive = false;                                       // 8.11 ערב: "שלח" / "אשר" started from this page is running
+const $ = id => document.getElementById(id);
+// 8.11 (שיחת האתר): one "target" = one sentence of the site: {pid, lang ('ar'|'he'), i (0-based | 'title'), accent (code)}.
+// The word list, the pending list and the corrections box are built by the functions below, from the target, so the page
+// "שאלות Claude Code" shows next to each item the very same list (same numbering, same Latin) and the very same box.
+const ACCENT_CODE = { 'ספרדי': 'sephardi', 'חסידי': 'chassidish', 'ליטאי': 'litvish' };   // TSV accent name -> code (the reverse of accentName)
+const LANG_CODE = { 'ארמית': 'ar', 'תרגום': 'he' };                                       // TSV language name -> code (the reverse of TSV_LANG)
+const panelTarget = () => pronKey && { pid: pronKey.pid, lang: pronKey.lang, i: pronKey.i, accent: state.accent };
+const sentOf = t => t.i === 'title' ? 'כותרת' : String(t.i + 1);                        // "משפט" / "מספר משפט" as written in the TSV files
+function wordsFor(t) {                                   // the numbered words of words.json for a target: [[n, word, latin], ...]
+  const key = t.i === 'title' ? `${t.pid}|title` : `${t.pid}|${t.lang}|${t.i}`;
+  return (WORDS[`${t.lang}_${t.accent}`] || {})[key] || [];
+}
+function fillWordList(ol, words) {                       // the list exactly as in the pronunciation pages (li.value = the page's number)
+  ol.innerHTML = '';
+  for (const [n, w, la] of words) {
+    const li = document.createElement('li'); li.value = n; li.dataset.n = n;
+    li.append(document.createTextNode(w)); const s = document.createElement('small'); s.textContent = la; li.appendChild(s);
+    ol.appendChild(li);
+  }
+}
+function textOf(t) {
+  const x = byId[t.pid]; if (!x) return '';
+  return t.i === 'title' ? x.p.title.display : ((x.p.text[t.lang] || {}).sentences || [])[t.i] ? x.p.text[t.lang].sentences[t.i].display : '';
+}
+function pronShow(pid, lang, i) {
+  pronKey = { pid, lang, i };
+  const x = byId[pid]; if (!x) return;
+  const words = wordsFor(panelTarget());
+  $('pronWhere').innerHTML = `<b>${x.a.title}</b> · פסקה <b>${x.p.letter}</b> · ${i === 'title' ? 'כותרת' : 'משפט ' + (i + 1)} · ${langName(lang)} · ${accentName(state.accent)}` +
+    (words.length ? `<br>המספרים כמו ב"דף הגייה - ${langName(lang) === 'תרגום' ? 'עברית' : 'ארמית'} ${accentName(state.accent)}"` : '<br>אין רשימת מילים לצירוף הזה (הרץ transcribe.py)');
+  fillWordList($('pronWords'), words);
+  if (qfOpen && (qfOpen.pid !== pid || qfOpen.lang !== lang || qfOpen.i !== i || qfOpen.accent !== state.accent)) qfOpen = null;
+  qfDecorate();                                            // 10.11: the quick fix (click a word)
+  renderPending();
+}
+
+// ---------- 10.11: quick phonetic fix on the pronunciation panel ----------
+// A click on a numbered word opens a box with its IPA (words.json, 4th field); ' -> ˈ and : -> ː while typing; ˈ ʔ ː
+// buttons; a read-only Latin transcription. "הפק" (serve.py /api/quick -> questions.py quick_fix) writes the IPA for THIS
+// occurrence and regenerates this sentence's paragraph at once; the page reloads, plays the sentence and tags the word
+// "חדש" with "השאר" (the tag goes; one question for the other occurrences) and "בטל" (the former reading back).
+let quick = {}, qfOpen = null;                             // qfOpen = {pid, lang, i, accent, idx} of the open box
+async function qfGet() { try { quick = (await (await fetch(API + '/api/quick', { cache: 'no-store' })).json()).fixes || {}; } catch (e) { quick = {}; } }
+function qfFor(t, idx) {
+  return Object.values(quick).find(q => q.pid === t.pid && q.lang === t.lang && q.accent === t.accent && q.si === t.i && q.index === idx
+                                        && ['new', 'running'].includes(q.status));
+}
+function qfSay(text) { const s = $('pronStatus'); if (s) s.textContent = text; }
+async function qfWaitRun() {                               // until the run started from here ends -> its last lines
+  runActive = true;
+  for (;;) {
+    await new Promise(r => setTimeout(r, 1500));
+    let st; try { st = await (await fetch(API + '/api/run', { cache: 'no-store' })).json(); } catch (e) { continue; }
+    if (!st.running) { runActive = false; return st; }
+  }
+}
+function qfReloadAndPlay(t, note) {
+  try { sessionStorage.setItem(KEY + ':quick', JSON.stringify({ pid: t.pid, lang: t.lang, i: t.i, accent: t.accent, note })); } catch (e) {}
+  location.reload();
+}
+function qfDecorate() {
+  const t = panelTarget(), ol = $('pronWords');
+  if (!t || t.i === 'title' || !ol) return;
+  const words = wordsFor(t);
+  [...ol.children].forEach((li, idx) => {
+    li.classList.add('qf-word');
+    li.title = 'לחץ לתיקון פונטי מהיר של המילה הזו';
+    li.onclick = e => {
+      if (e.target.closest('.qf-box, .qf-tag')) return;
+      qfOpen = qfOpen && qfOpen.idx === idx && qfOpen.pid === t.pid && qfOpen.i === t.i ? null : { ...t, idx };
+      qfDecorate();
+    };
+    li.querySelectorAll('.qf-box, .qf-tag').forEach(x => x.remove());
+    const q = qfFor(t, idx);
+    if (q) {
+      const tag = document.createElement('div'); tag.className = 'qf-tag';
+      if (q.status === 'running') tag.textContent = 'מפיק...';
+      else {
+        const b = document.createElement('b'); b.textContent = 'חדש'; tag.appendChild(b);
+        const s = document.createElement('span'); s.dir = 'ltr'; s.textContent = ` ${q.ipa || ''} (${ipaLatin(q.ipa || '')})`; tag.appendChild(s);
+        if (q.short) tag.appendChild(Object.assign(document.createElement('span'), { textContent: ` · ${q.short}${q.m ? ' M' : ''}` }));
+        for (const [label, act] of [['השאר', 'keep'], ['בטל', 'undo']]) {
+          const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'qf-' + act; bt.textContent = label;
+          bt.addEventListener('click', () => qfAct(t, q, act)); tag.appendChild(bt);
+        }
+      }
+      li.appendChild(tag);
+    }
+    if (qfOpen && qfOpen.idx === idx && qfOpen.pid === t.pid && qfOpen.i === t.i && qfOpen.lang === t.lang) li.appendChild(qfBox(t, idx, words[idx] || []));
+  });
+}
+const qfTabs = {};                                        // `${pid}|${lang}|${i}|${idx}` -> {tab, mode, latin, heard, m, short}
+function qfBox(t, idx, w) {
+  const key = `${t.pid}|${t.lang}|${t.i}|${idx}`, st = qfTabs[key] || (qfTabs[key] = { tab: 'ipa', mode: 'stress', latin: '', heard: '', m: false, short: '' });
+  const wrap = document.createElement('div'); wrap.className = 'qf-box qf-wrap';
+  const tabs = document.createElement('div'); tabs.className = 'qf-tabs';
+  for (const [k, label] of [['ipa', 'פונטי'], ['short', 'קיצור']]) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qf-tab'; b.dataset.tab = k; b.textContent = label;
+    b.setAttribute('aria-pressed', String(st.tab === k));
+    b.addEventListener('click', () => { st.tab = k; qfDecorate(); });
+    tabs.appendChild(b);
+  }
+  wrap.appendChild(tabs);
+  wrap.appendChild(st.tab === 'ipa' ? qfIpaPane(t, idx, w, st) : qfShortPane(t, idx, w, st));
+  return wrap;
+}
+function qfShortPane(t, idx, w, st) {                      // 10.11: the shorthand by buttons (the same shorthands as typed)
+  const box = document.createElement('div'); box.className = 'qf-pane qf-short';
+  const n = w[0], word = w[1] || '';
+  const show = document.createElement('b'); show.className = 'qf-short-show'; show.dir = 'rtl';
+  const refresh = () => { show.textContent = st.short ? `קיצור: ${st.short}${st.m ? ' M' : ''}` : 'בחר אות או כפתור'; };
+  const set = s => { st.short = s; refresh(); };
+  const letters = document.createElement('div'); letters.className = 'qf-letters';
+  const seen = {};
+  for (const m of word.matchAll(/([א-ת])([֑-ׇ]*)/g)) {
+    const L = m[1], k = (seen[L] = (seen[L] || 0) + 1);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qf-letter'; b.textContent = m[0]; b.title = st.mode === 'hletter' ? 'הארכת האות הזו' : 'הטעמה על האות הזו';
+    b.addEventListener('click', () => { const spec = L + (k > 1 ? k : ''); set(st.mode === 'hletter' ? `${n} H ${spec}` : `${n} ${spec}`); st.mode = 'stress'; qfDecorate(); });
+    letters.appendChild(b);
+  }
+  box.appendChild(letters);
+  const row = document.createElement('div'); row.className = 'qf-row';
+  for (const [label, act] of [['P', 'P'], ['PL', 'PL'], ['H', 'H'], ['H על אות', 'HL'], ['כתיב לטיני', 'LAT'], ['נשמע כמו', 'HEARD']]) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qf-btn'; b.dataset.act = act; b.textContent = label;
+    if ((act === 'HL' && st.mode === 'hletter') || (act === 'LAT' && st.mode === 'latin') || (act === 'HEARD' && st.mode === 'heard')) b.setAttribute('aria-pressed', 'true');
+    b.addEventListener('click', () => {
+      if (act === 'P' || act === 'PL' || act === 'H') { st.mode = 'stress'; set(`${n} ${act}`); qfDecorate(); return; }
+      st.mode = { HL: 'hletter', LAT: 'latin', HEARD: 'heard' }[act]; qfDecorate();
+    });
+    row.appendChild(b);
+  }
+  const mlab = document.createElement('label'); mlab.className = 'qf-m';
+  const mbox = document.createElement('input'); mbox.type = 'checkbox'; mbox.checked = st.m; mbox.addEventListener('change', () => { st.m = mbox.checked; refresh(); });
+  mlab.append(mbox, ' M (גם ליטאי וחסידי)'); row.appendChild(mlab);
+  box.appendChild(row);
+  if (st.mode === 'hletter') box.appendChild(Object.assign(document.createElement('div'), { className: 'qf-hint', textContent: 'עכשיו לחץ על האות להארכה.' }));
+  if (st.mode === 'latin' || st.mode === 'heard') {
+    const r2 = document.createElement('div'); r2.className = 'qf-row';
+    const inp = document.createElement('input'); inp.type = 'text'; inp.dir = 'ltr'; inp.className = st.mode === 'latin' ? 'qf-latin' : 'qf-heard';
+    inp.placeholder = st.mode === 'latin' ? 'VEUVDA (ההברה המוטעמת באותיות גדולות)' : 'איך זה נשמע עכשיו';
+    inp.value = st.mode === 'latin' ? st.latin : st.heard;
+    inp.addEventListener('input', () => {
+      if (st.mode === 'latin') { st.latin = inp.value.replace(/[^A-Za-z']/g, ''); if (inp.value !== st.latin) inp.value = st.latin; set(st.latin ? `${n} ${st.latin}` : ''); }
+      else st.heard = inp.value;
+    });
+    r2.append(Object.assign(document.createElement('span'), { textContent: st.mode === 'latin' ? 'כתיב לטיני:' : 'נשמע כמו:' }), inp);
+    box.appendChild(r2); setTimeout(() => inp.focus(), 0);
+  }
+  const r3 = document.createElement('div'); r3.className = 'qf-row';
+  const go = document.createElement('button'); go.type = 'button'; go.className = 'qf-go'; go.textContent = 'הפק';
+  go.addEventListener('click', () => qfProduce(t, idx, w, { short: st.short, m: st.m, heard: st.heard }));
+  r3.append(show, go); box.appendChild(r3);
+  if (st.heard && st.mode !== 'heard') box.appendChild(Object.assign(document.createElement('div'), { className: 'qf-hint', textContent: `נשמע כמו: ${st.heard}` }));
+  refresh();
+  return box;
+}
+function qfIpaPane(t, idx, w, st) {
+  const box = document.createElement('div'); box.className = 'qf-pane qf-phon';
+  const inp = document.createElement('input'); inp.type = 'text'; inp.dir = 'ltr'; inp.className = 'qf-ipa'; inp.value = st.ipa ?? (w[3] || ''); inp.setAttribute('aria-label', 'IPA');
+  const lat = document.createElement('span'); lat.className = 'qf-lat'; lat.dir = 'ltr'; lat.title = 'תעתיק לטיני, לקריאה בלבד'; lat.textContent = ipaLatin(inp.value);
+  const upd = () => {                                      // ' -> ˈ , : -> ː (the caret stays where it was)
+    const p = inp.selectionStart, v = inp.value.replace(/'/g, 'ˈ').replace(/:/g, 'ː');
+    if (v !== inp.value) { inp.value = v; inp.setSelectionRange(p, p); }
+    lat.textContent = ipaLatin(inp.value);
+    st.ipa = inp.value;                                    // kept when switching tabs
+  };
+  inp.addEventListener('input', upd);
+  box.appendChild(inp);
+  for (const [sign, name] of [['ˈ', 'הטעמה'], ['ʔ', 'עצירה'], ['ː', 'הארכה']]) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qf-sign'; b.textContent = sign; b.title = name;
+    b.addEventListener('click', () => {
+      const s0 = inp.selectionStart ?? inp.value.length, s1 = inp.selectionEnd ?? s0;
+      inp.value = inp.value.slice(0, s0) + sign + inp.value.slice(s1); upd(); inp.focus(); inp.setSelectionRange(s0 + 1, s0 + 1);
+    });
+    box.appendChild(b);
+  }
+  const go = document.createElement('button'); go.type = 'button'; go.className = 'qf-go'; go.textContent = 'הפק';
+  go.addEventListener('click', () => qfProduce(t, idx, w, inp.value.trim()));
+  box.append(' ', lat, ' ', go);
+  setTimeout(() => inp.focus(), 0);
+  return box;
+}
+async function qfProduce(t, idx, w, what) {                // what = the typed IPA (tab "פונטי") or {short, m, heard} (tab "קיצור")
+  const body = { action: 'fix', pid: t.pid, lang: t.lang, accent: t.accent, si: t.i, index: idx, n: w[0] };
+  if (typeof what === 'string') {
+    const ipa = what, ph = await fPhonemes();
+    const bad = ph ? [...new Set([...ipa].filter(ch => ch !== 'ˈ' && !ph.has(ch)))] : [];
+    if (!ipa) { qfSay('התיבה ריקה.'); return; }
+    if (bad.length) { qfSay('המנוע לא מכיר את הסימנים: ' + bad.map(ch => `"${ch}"`).join(' ') + '. מחק או החלף אותם.'); return; }
+    if (![...ipa].some(ch => 'aeiou'.includes(ch))) { qfSay('אין במילה אף תנועה (a e i o u).'); return; }
+    body.ipa = ipa;
+  } else {
+    if (!what.short) { qfSay('בחר קודם אות או כפתור (הקיצור ריק).'); return; }
+    Object.assign(body, what);
+  }
+  try {
+    const r = await fetch(API + '/api/quick', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    qfOpen = null; await qfGet(); qfDecorate(); qfSay('מפיק...');
+    const st = await qfWaitRun();
+    if (st.code !== 0) { await qfGet(); qfDecorate(); qfSay('ההפקה נכשלה: ' + (st.lines || []).filter(l => !/HF Hub|LENGTHENED/.test(l)).slice(-3).join(' · ')); return; }
+    await qfGet();
+    const q = quick[j.id] || {};
+    qfReloadAndPlay(t, `הסתיים: ${w[1]}` + (body.short ? ` (${body.short}${body.m ? ' M' : ''})` : '') + (q.ipa ? ` = ${q.ipa} (${ipaLatin(q.ipa)})` : '') + '. המשפט מתנגן.');
+  } catch (e) { qfSay('לא התחיל: ' + e.message + ' (השרת פועל?)'); }
+}
+async function qfAct(t, q, act) {
+  try {
+    const r = await fetch(API + '/api/quick', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: act, id: q.id }) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    qfSay(act === 'undo' ? 'מבטל ומפיק את ההקראה הקודמת...' : 'שולח לדף השאלות...');
+    const st = await qfWaitRun();
+    if (st.code !== 0) { qfSay('נכשל: ' + (st.lines || []).slice(-3).join(' · ')); return; }
+    if (act === 'undo') { qfReloadAndPlay(t, 'הסתיים: בוטל, ההקראה הקודמת חזרה. המשפט מתנגן.'); return; }
+    await qfGet(); qfDecorate(); if (typeof qGet === 'function') qGet();
+    const line = ((st.lines || []).find(l => l.startsWith('QUICK-KEEP')) || '').replace(/^QUICK-KEEP \S+: /, '');
+    qfSay('הסתיים: נשאר. ' + line + (/נשלחו/.test(line) ? ' (בדף השאלות).' : ''));
+  } catch (e) { qfSay('לא בוצע: ' + e.message + ' (השרת פועל?)'); }
+}
+qfGet().then(() => {
+  if (pronKey) qfDecorate();
+  let after = null;                                        // after "הפק" / "בטל": the page was reloaded for the new audio
+  try { after = JSON.parse(sessionStorage.getItem(KEY + ':quick') || 'null'); sessionStorage.removeItem(KEY + ':quick'); } catch (e) {}
+  const x = after && byId[after.pid];
+  if (!x || after.accent !== state.accent) return;
+  document.body.classList.add('pron-open');
+  pronShow(after.pid, after.lang, after.i);
+  qfSay(after.note || '');
+  setTimeout(() => startPara(x.idx, { skipTitle: true, onlySentence: { lang: after.lang, i: after.i } }), 300);   // the sentence plays by itself
+});
+function rowsFor(t) {                                    // the pending corrections (תיקונים ממתינים.tsv) of one sentence
+  const sent = sentOf(t);
+  return pending.filter(r => r['פסקה'] === t.pid && r['משפט'] === sent && r['מבטא'] === accentName(t.accent) && r['שפה'] === TSV_LANG[t.lang]);
+}
+function rowsForCurrent() { return pronKey ? rowsFor(panelTarget()) : []; }
+function fillPendingList(ul, rows, status) {             // the pending list with a "מחק" button per row; status = where messages go
+  ul.innerHTML = '';
+  for (const r of rows) {
+    const li = document.createElement('li');
+    const b = document.createElement('b'); b.textContent = r['תיקון']; li.appendChild(b);
+    const meta = document.createElement('small'); meta.textContent = (r['סטטוס'] && r['סטטוס'] !== 'ממתין' ? r['סטטוס'] + ' · ' : '') + (r['מקור'] || '');
+    const del = document.createElement('button'); del.type = 'button'; del.textContent = 'מחק'; del.title = 'מחיקת התיקון מהקובץ';
+    del.addEventListener('click', () => apiPost({ action: 'delete', id: r.id }, status).then(() => { status('נמחק.'); }));
+    const right = document.createElement('span'); right.append(meta, ' ', del); li.appendChild(right);
+    ul.appendChild(li);
+  }
+  if (!rows.length && pendingOk) { const li = document.createElement('li'); li.textContent = 'אין'; li.style.color = 'var(--muted)'; ul.appendChild(li); }
+}
+async function saveFixes(t, lines, status) {            // the typed lines -> rows of תיקונים ממתינים.tsv, through serve.py
+  const text = textOf(t);
+  const rows = lines.map(fix => ({ 'מבטא': accentName(t.accent), 'שפה': TSV_LANG[t.lang], 'פסקה': t.pid,
+    'משפט': sentOf(t), 'טקסט המשפט': text, 'תיקון': fix, 'מקור': 'אתר' }));
+  await apiPost({ action: 'add', rows }, status);
+  status(`נשמרו ${rows.length} תיקונים לקובץ "תיקונים ממתינים.tsv".`);
+  return rows;
+}
+function renderPending() {
+  const rows = rowsForCurrent();
+  $('pronCount').textContent = pendingOk ? `(${rows.length})` : '';
+  $('pronTotal').textContent = pendingOk ? `סה"כ ממתינים באתר: ${pending.length}` : '';
+  pCounters();                                           // 8.11 ערב: the header button counts typed + waiting-for-approval
+  fillPendingList($('pronPending'), rows, pronStatus);
+  renderMineInPanel();                                   // 8.11: the "תיקון שלי" items of this sentence (questions file)
+  qRefreshPending();                                     // 8.11: the pending lists under the items of the two pages
+  pMaybeRender();                                        // 8.11 ערב: the page "תיקונים ממתינים" follows the file
+  runButtons();                                          // 8.11 ערב: "שלח (N)" follows the count
+}
+// 8.11: the corrections of Yanki that already left the pending file and wait in שאלות Claude Code.tsv ("תיקון שלי") for the
+// same sentence; shown in the panel under the pending list, with "לשמוע ולאשר" that opens the page "תיקונים ממתינים" on the item.
+function mineFor(t) {
+  const sent = sentOf(t);
+  return questions.filter(r => r['סוג'] === 'תיקון שלי' && r['פסקה'] === t.pid && r['מספר משפט'] === sent && r['מבטא'] === accentName(t.accent) && r['שפה'] === TSV_LANG[t.lang]);
+}
+function renderMineInPanel() {
+  const ul = $('pronMine'), rows = pronKey && questionsOk ? mineFor(panelTarget()) : [];
+  ul.innerHTML = ''; ul.hidden = $('pronMineLbl').hidden = !rows.length;
+  $('pronMineCount').textContent = `(${rows.length})`;
+  for (const r of rows) {
+    const li = document.createElement('li');
+    const b = document.createElement('b'); b.textContent = r['שם']; li.appendChild(b);
+    const meta = document.createElement('small'); meta.textContent = (r['תשובה'] || '').trim() ? `נענה: ${r['תשובה'].trim()}` : 'מחכה לתשובה';
+    const go = document.createElement('button'); go.type = 'button'; go.textContent = 'לשמוע ולאשר'; go.title = 'פותח את הפריט בדף השאלות';
+    go.addEventListener('click', () => qGoTo(r['מזהה']));
+    const right = document.createElement('span'); right.append(meta, ' ', go); li.appendChild(right);
+    ul.appendChild(li);
+  }
+}
+function pronStatus(t) { $('pronStatus').textContent = t || ''; }
+async function apiGet() {
+  try {
+    const r = await fetch(API + '/api/pending', { cache: 'no-store' });
+    const j = await r.json();
+    pending = j.rows || []; pendingOk = true;
+    if (lastPendingCount != null && pending.length < lastPendingCount && !runActive) {   // a correction was done elsewhere: take the new audio
+      if (playing) reloadWhenIdle = true; else location.reload();                  // (8.11 ערב: not while "שלח" / "אשר" run from here)
+    }
+    lastPendingCount = pending.length;
+    renderPending();
+    if (!$('pronStatus').textContent.startsWith('השרת')) {} else pronStatus('');
+  } catch (e) {
+    pendingOk = false; renderPending();
+    pronStatus('השרת לא פועל: לחץ פעמיים על "הפעל את אתר תולדות.bat" כדי לשמור ולראות תיקונים.');
+  }
+}
+async function apiPost(body, status = pronStatus) {      // status: where an error is written (the panel, or a card of the questions page)
+  try {
+    const r = await fetch(API + '/api/pending', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    pending = j.rows || []; pendingOk = true; lastPendingCount = pending.length; renderPending();
+    return j;
+  } catch (e) { status('לא נשמר: ' + e.message + ' (השרת פועל?)'); throw e; }
+}
+$('fixSave').addEventListener('click', async () => {
+  const lines = $('fixText').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!pronKey) { pronStatus('קודם בחר משפט (לחץ עליו או נגן).'); return; }
+  if (!lines.length) { pronStatus('כתוב תיקון, שורה לכל תיקון.'); return; }
+  await saveFixes(panelTarget(), lines, pronStatus);
+  $('fixText').value = '';
+});
+$('pronToggle').addEventListener('click', () => { document.body.classList.toggle('pron-open'); try { localStorage.setItem(KEY + ':pron', document.body.classList.contains('pron-open') ? '1' : '0'); } catch (e) {} });
+$('pronClose').addEventListener('click', () => { document.body.classList.remove('pron-open'); try { localStorage.setItem(KEY + ':pron', '0'); } catch (e) {} });
+try { if (localStorage.getItem(KEY + ':pron') !== '0' && window.innerWidth >= 1000) document.body.classList.add('pron-open'); } catch (e) { if (window.innerWidth >= 1000) document.body.classList.add('pron-open'); }
+apiGet();   // published copy: no polling
+
+// ---------- the page "שאלות Claude Code" (6.11) ----------
+// Source: שאלות Claude Code.tsv (built by questions.py), read and written through serve.py. The page writes only the
+// answer column ("תשובה") of one row, by its id (מזהה). Sections in this order: תיקון שלי (8.11: the questions that came
+// from Yanki's own typed corrections, first and in blue, so he sees which are his and which are Claude Code's), כלל,
+// כלל מבטא, מילה בודדת. 8.11 ערב: the button "אשר" runs questions.py decide (through serve.py) on every answered item.
+const MINE = 'תיקון שלי';
+const Q_SECTIONS = [[MINE, 'התיקונים שלי (שאלות שעלו מהתיקונים שהקלדת)'], ['כלל', 'כללים'], ['כלל מבטא', 'כללי מבטא'], ['מילה בודדת', 'מילים בודדות']];
+const Q_ANS = ['כן', 'לא', 'לא בטוח'];
+let questions = [], questionsOk = false, qSig = '', qSeen = '';
+const qAudio = new Audio(); qAudio.preload = 'none';
+let qPlayingBtn = null;
+const isOpen = r => !(r['תשובה'] || '').trim();
+const isDecided = r => ['כן', 'לא', 'לא הצליח'].includes((r['תשובה'] || '').trim());            // what "אשר" will apply
+function qOpenCount() { return questions.filter(isOpen).length; }
+function qDecidedCount() { return questions.filter(isDecided).length + logRevertCount() + fChosenCount(); }   // answers + revert requests + "לא הצליח" choices
+function qCounters() {
+  const b = $('cntQuestions'); b.querySelector('b').textContent = questionsOk ? qOpenCount() : '–';
+  b.classList.toggle('has', questionsOk && qOpenCount() > 0);
+  pCounters(); runButtons();
+}
+const statusEl = () => $('ppage').hidden ? $('qStatus') : $('pStatus');            // messages go to the page that is open
+async function qGet() {
+  try {
+    const r = await fetch(API + '/api/questions', { cache: 'no-store' });
+    const j = await r.json();
+    questions = j.rows || []; questionsOk = true;
+  } catch (e) { questionsOk = false; }
+  await logGet();
+  qCounters();
+  const sig = JSON.stringify([questions, qlog]);
+  if (sig !== qSeen) { qSeen = sig; renderMineInPanel(); }        // 8.11: the panel's "תיקון שלי" list follows the file
+  if (!$('qpage').hidden && sig !== qSig) qRender();            // the file changed (questions.py, or another window)
+  pMaybeRender();                                                 // 8.11 ערב: so does section ב of "תיקונים ממתינים"
+}
+function qStopAudio() { qAudio.pause(); if (qPlayingBtn) qPlayingBtn.classList.remove('playing'); qPlayingBtn = null; }
+qAudio.addEventListener('ended', qStopAudio);
+qAudio.addEventListener('error', () => { if (qPlayingBtn) { statusEl().textContent = 'קובץ השמע לא נמצא: ' + decodeURI(qAudio.src.split('/').pop()); } qStopAudio(); });
+function qPlay(btn, path) {
+  if (qPlayingBtn === btn) { qStopAudio(); return; }               // a second click stops it
+  qStopAudio();
+  if (playing) $('playBtn').click();                                // never two sounds at once: pause the site's player
+  qAudio.src = path.split('/').map(encodeURIComponent).join('/');
+  qAudio.play().then(() => { qPlayingBtn = btn; btn.classList.add('playing'); }).catch(e => { statusEl().textContent = 'לא ניתן לנגן: ' + e.message; });
+}
+async function qAnswer(id, answer, heard) {
+  const st = statusEl(); st.textContent = '';
+  try {
+    const body = heard === undefined ? { id, answer } : { id, answer, heard };       // 9.11: "לא הצליח" + what is heard
+    const r = await fetch(API + '/api/questions', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    questions = j.rows || []; questionsOk = true;
+    if (!$('qpage').hidden) qRender();
+    pMaybeRender(true); qCounters(); renderMineInPanel();
+    st.textContent = answer ? `נשמר: "${answer}".` : 'התשובה בוטלה.';
+  } catch (e) { st.textContent = 'לא נשמר: ' + e.message + ' (השרת פועל? לחץ פעמיים על "הפעל את אתר תולדות.bat")'; }
+}
+// 9.11: "↩ החזר לממתינים" on a "תיקון שלי": serve.py removes it from the questions file (and from its source, so it
+// does not come back) and puts the typed shorthand back in תיקונים ממתינים.tsv as the same row.
+async function qReturn(id, name) {
+  const st = statusEl(); st.textContent = '';
+  if (!confirm(`להחזיר את "${name}" לתיקונים הממתינים?`)) return;
+  try {
+    const r = await fetch(API + '/api/questions', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'return', id }) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    questions = j.rows || []; questionsOk = true;
+    pending = j.pending || pending; pendingOk = true; lastPendingCount = pending.length;
+    if (!$('qpage').hidden) qRender();
+    renderPending(); pMaybeRender(true); qCounters(); renderMineInPanel();
+    st.textContent = `"${j.returned}" חזר לתיקונים הממתינים.`;
+  } catch (e) { st.textContent = 'לא הוחזר: ' + e.message + ' (השרת פועל? לחץ פעמיים על "הפעל את אתר תולדות.bat")'; }
+}
+function qEl(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+// 8.11 (שיחת האתר): the example sentence of an item as a panel target {pid, lang, i, accent}, from the columns "פסקה" and
+// "מספר משפט" (the same format as the pending file). "ארמית+תרגום" = the language whose sentence is the example (he, then ar);
+// "ליטאי+חסידי" = the first accent that has a word list. null when the item has no example sentence.
+function qTarget(r) {
+  const pid = r['פסקה'], sent = r['מספר משפט'];
+  if (!pid || !sent || !byId[pid]) return null;
+  const i = sent === 'כותרת' ? 'title' : Number(sent) - 1;
+  if (i !== 'title' && !(i >= 0)) return null;
+  const accents = (r['מבטא'] || '').split('+').map(a => ACCENT_CODE[a.trim()]).filter(Boolean);
+  let langs = (r['שפה'] || '').split('+').map(l => LANG_CODE[l.trim()]).filter(Boolean);
+  if (i === 'title') langs = ['he'];                                              // titles are Hebrew only
+  else if (langs.length > 1) {
+    const hit = ['he', 'ar'].find(l => textOf({ pid, lang: l, i }) === r['משפט']);
+    langs = hit ? [hit] : ['he', 'ar'];
+  }
+  let first = null;
+  for (const lang of langs) for (const accent of accents) {
+    const t = { pid, lang, i, accent }; first = first || t;
+    if (wordsFor(t).length) return t;
+  }
+  return first;
+}
+// 8.11: under an item - the word list (collapsed), the pending corrections of the sentence and the corrections box; all three
+// are the panel's own functions (wordsFor / fillWordList / rowsFor / fillPendingList / saveFixes), not a second version.
+// keep = {open, text}: what the user had in this card before a re-render (an open list, an unsaved typed correction).
+// withBox = false (8.11 ערב, section א of "תיקונים ממתינים"): the word list only, without the pending list and the box.
+function qTools(r, card, keep, withBox = true) {
+  const t = qTarget(r), box = qEl('div', 'q-tools');
+  card.appendChild(box);
+  if (!t) { box.appendChild(qEl('div', 'q-where', 'אין רשימת מילים')); return; }
+  const words = wordsFor(t), x = byId[t.pid];
+  const head = qEl('div', 'q-row');
+  const btn = qEl('button', 'q-words-btn', 'הצג מילים'); btn.type = 'button';
+  const where = qEl('span', 'q-where', `פסקה ${x.p.letter} · ${t.i === 'title' ? 'כותרת' : 'משפט ' + sentOf(t)} · ${langName(t.lang)} · ${accentName(t.accent)}`);
+  head.append(btn, where); box.appendChild(head);
+  const ol = qEl('ol', 'pron-words'); ol.hidden = true; box.appendChild(ol);
+  if (!words.length) { btn.disabled = true; btn.textContent = 'אין רשימת מילים'; btn.title = 'הצירוף לא עבר transcribe.py'; }
+  else {
+    fillWordList(ol, words);
+    const show = open => { ol.hidden = !open; btn.textContent = open ? 'הסתר מילים' : 'הצג מילים'; btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => show(ol.hidden));
+    show(keep ? !!keep.open : true);                       // 8.11 ערב (ינקי): the numbered list is OPEN by default; "הסתר מילים" folds it
+  }
+  if (!withBox) return;
+  box.appendChild(qEl('div', 'pron-lbl', 'תיקונים ממתינים למשפט הזה'));
+  const ul = qEl('ul', 'pron-pending'); ul.dataset.target = JSON.stringify(t); box.appendChild(ul);
+  box.appendChild(qEl('div', 'pron-lbl', 'תיקון חדש (שורה לכל תיקון: "12 ד", "12 P", "12 PL", "12 H", "12 H ל2")'));
+  const ta = qEl('textarea', 'q-fix'); ta.rows = 2; ta.placeholder = '12 ד\n15 P'; ta.value = (keep && keep.text) || ''; box.appendChild(ta);
+  const row = qEl('div', 'q-row'), save = qEl('button', 'q-fix-save', 'שמור לתיקונים ממתינים'); save.type = 'button'; row.appendChild(save);
+  const status = qEl('div', 'pron-status'), setStatus = s => { status.textContent = s || ''; };
+  save.addEventListener('click', async () => {
+    const lines = ta.value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (!lines.length) { setStatus('כתוב תיקון, שורה לכל תיקון.'); return; }
+    await saveFixes(t, lines, setStatus);
+    ta.value = '';
+  });
+  box.append(row, status);
+  fillPendingList(ul, rowsFor(t), setStatus);
+}
+function qRefreshPending() {                             // the pending file changed: refresh the lists under the items (both pages)
+  for (const ul of document.querySelectorAll('#qList ul.pron-pending[data-target], #pList ul.pron-pending[data-target]')) {
+    const status = ul.closest('.q-tools').querySelector('.pron-status');
+    fillPendingList(ul, rowsFor(JSON.parse(ul.dataset.target)), s => { status.textContent = s || ''; });
+  }
+}
+function focusCard(pageId, id, status) {                 // scroll to a card of a page and mark it for a few seconds
+  const card = document.querySelector(`#${pageId} .q-card[data-id="${CSS.escape(id)}"]`);
+  if (!card) { status.textContent = 'הפריט לא נמצא בקובץ (השרת פועל?).'; return; }
+  card.scrollIntoView({ block: 'center' });
+  card.classList.add('q-focus'); setTimeout(() => card.classList.remove('q-focus'), 4000);
+}
+function qGoTo(id) { qShow(true); focusCard('qpage', id, $('qStatus')); }        // open the questions page on an item
+function pGoTo(id) { pShow(true); focusCard('ppage', id, $('pStatus')); }        // 8.11 ערב: from the panel's "לשמוע ולאשר"
+function keepOf(list) {                                  // 8.11: the state of every card (list open / folded, an unsaved typed correction) survives a re-render
+  const keep = {};
+  for (const c of list.querySelectorAll('.q-card')) {
+    const ta = c.querySelector('textarea.q-fix'), ol = c.querySelector('ol.pron-words');
+    keep[c.dataset.id] = { text: ta ? ta.value : '', open: ol ? !ol.hidden : true };
+  }
+  return keep;
+}
+// one card of a row of the questions file (a question of Claude Code, or a "תיקון שלי"): name, words, example sentence,
+// detail, לפני / אחרי, כן / לא / לא בטוח, and the tools (word list, pending corrections, box). Used by both pages.
+function qCard(r, keep) {
+  const ans = (r['תשובה'] || '').trim();
+  const card = qEl('article', 'q-card' + (ans ? ' answered' : '') + (r['סוג'] === MINE ? ' q-mine-card' : '')); card.dataset.id = r['מזהה'];
+  const name = qEl('div', 'q-name', r['שם']); name.appendChild(qEl('span', 'q-meta', `${r['סוג']} · ${r['שפה']} · ${r['מבטא']}`)); card.appendChild(name);
+  if (r['מילים']) { const w = qEl('div', 'q-words'); w.append(qEl('small', null, 'המילים: '), document.createTextNode(r['מילים'])); card.appendChild(w); }
+  if (r['משפט']) { const s = qEl('div', 'q-sent ' + (r['שפה'] === 'תרגום' ? 'he' : 'ar')); s.append(qEl('small', null, 'משפט הדוגמה: '), document.createTextNode(r['משפט'])); card.appendChild(s); }
+  if (r['פירוט']) card.appendChild(qEl('div', 'q-detail', r['פירוט']));
+  // 9.11 (צ'אט התיקונים): a rule / accent rule has up to 3 examples (column "דוגמאות", JSON), one under the other: the
+  // sentence with its word in bold, and its own "לפני" / "אחרי". The answer buttons stay one for the whole rule.
+  let exs = [];
+  try { exs = r['דוגמאות'] ? JSON.parse(r['דוגמאות']) : []; } catch (e) { exs = []; }
+  if (exs.length) {
+    const box = qEl('ol', 'q-examples');
+    for (const ex of exs) {
+      const li = qEl('li', 'q-example');
+      const s = qEl('div', 'q-sent ' + (ex['שפה'] === 'תרגום' ? 'he' : 'ar'));
+      const meta = `${ex['שפה']} · פסקה ${(byId[ex['פסקה']] || { p: { letter: ex['פסקה'] } }).p.letter} · ${ex['מספר משפט'] === 'כותרת' ? 'כותרת' : 'משפט ' + ex['מספר משפט']}`;
+      s.appendChild(qEl('small', null, meta + ': '));
+      const text = ex['משפט'] || '', w = ex['מילה'] || '';
+      const at = w ? text.indexOf(w) : -1;
+      if (at >= 0) { s.append(document.createTextNode(text.slice(0, at)), qEl('b', null, w), document.createTextNode(text.slice(at + w.length))); }
+      else s.appendChild(document.createTextNode(text));
+      li.appendChild(s);
+      const pr = qEl('div', 'q-row');
+      for (const [col, label, k] of [['שמע לפני', '▶ לפני', 'before'], ['שמע אחרי', '▶ אחרי', 'after']]) {
+        const b = qEl('button', 'q-play', label); b.type = 'button'; b.dataset.k = k;
+        if (ex[col]) b.addEventListener('click', () => qPlay(b, ex[col])); else { b.disabled = true; b.title = 'אין שמע'; }
+        pr.appendChild(b);
+      }
+      li.appendChild(pr);
+      box.appendChild(li);
+    }
+    card.appendChild(box);
+  }
+  if (r['המלצה']) card.appendChild(qEl('div', 'q-rec', r['המלצה']));   // 9.11: Claude Code's recommendation, above the answers (never pre-selected)
+  const row = qEl('div', 'q-row');
+  if (!exs.length) for (const [col, label, k] of [['שמע לפני', '▶ לפני', 'before'], ['שמע אחרי', '▶ אחרי', 'after']]) {
+    const b = qEl('button', 'q-play', label); b.type = 'button'; b.dataset.k = k;
+    if (r[col]) b.addEventListener('click', () => qPlay(b, r[col])); else { b.disabled = true; b.title = 'אין שמע'; }
+    row.appendChild(b);
+  }
+  if (!exs.length) row.appendChild(qEl('span', 'sep'));
+  for (const a of (r['סוג'] === MINE ? [...Q_ANS, 'לא הצליח'] : Q_ANS)) {   // 9.11: "לא הצליח" for Yanki's own corrections
+    const b = qEl('button', 'q-ans', a); b.type = 'button'; b.dataset.a = a;
+    b.setAttribute('aria-pressed', String(ans === a));
+    b.addEventListener('click', () => qAnswer(r['מזהה'], ans === a ? '' : a));     // the same answer again = no answer
+    row.appendChild(b);
+  }
+  if (ans === 'לא הצליח') {                                // the optional box: what the AFTER sounds like now
+    const box = qEl('span', 'q-heard');
+    box.appendChild(qEl('small', null, 'איך זה נשמע עכשיו? '));
+    const inp = qEl('input'); inp.type = 'text'; inp.dir = 'ltr'; inp.placeholder = 'VAELI'; inp.value = r['נשמע'] || '';
+    inp.addEventListener('change', () => qAnswer(r['מזהה'], 'לא הצליח', inp.value.trim()));
+    box.appendChild(inp); row.appendChild(box);
+  }
+  if (r['סוג'] === MINE) {                                // 9.11: a correction of Yanki's goes back to the pending file
+    const back = qEl('button', 'q-return', '↩ החזר לממתינים'); back.type = 'button';
+    back.title = 'מוציא את התיקון מדף השאלות ומחזיר אותו לתיקונים הממתינים, כמו שהקלדת אותו, כדי לתקן או למחוק';
+    back.addEventListener('click', () => qReturn(r['מזהה'], r['שם']));
+    row.appendChild(back);
+  }
+  card.appendChild(row);
+  qTools(r, card, keep);                                 // 8.11: word list, pending corrections and the box
+  return card;
+}
+function qRender() {
+  qSig = JSON.stringify([questions, qlog]);
+  const list = $('qList'), keep = keepOf(list);
+  list.innerHTML = '';
+  if (!questionsOk) {
+    $('qSum').textContent = '';
+    list.appendChild(qEl('p', 'q-status', 'השרת לא פועל: לחץ פעמיים על "הפעל את אתר תולדות.bat" כדי לראות את השאלות ולענות.'));
+    return;
+  }
+  const by = t => questions.filter(r => r['סוג'] === t);
+  const known = Q_SECTIONS.map(s => s[0]);
+  const other = questions.filter(r => !known.includes(r['סוג']));
+  $('qSum').textContent = `${questions.length} פריטים: ${by(MINE).length} מהתיקונים שלי, ${by('כלל').length} כללים, ${by('כלל מבטא').length} כללי מבטא, ${by('מילה בודדת').length} מילים בודדות` +
+    (other.length ? `, ${other.length} אחרות` : '') + ` · בלי תשובה: ${qOpenCount()} · מחכים ל"אשר": ${qDecidedCount()}` + (logRevertCount() ? ` (מהם ${logRevertCount()} ביטולים)` : '');
+  const secs = Q_SECTIONS.map(([t, title]) => [title, by(t), t]);
+  if (other.length) secs.push(['אחרות', other, '']);
+  for (const [title, rows, t] of secs) {
+    const sec = qEl('section', 'q-sec' + (t === MINE ? ' q-mine' : '')); sec.appendChild(qEl('h3', null, `${title} (${rows.length})`));
+    if (t === MINE) sec.appendChild(qEl('p', 'q-help q-sec-help', 'תיקונים שהקלדת ונשלחו: לכל אחד "לפני" (כמו היום) ו"אחרי" (התיקון שלך). שמע ובחר כן / לא; "אשר" מבצע.'));
+    if (!rows.length) sec.appendChild(qEl('p', 'q-help', 'אין.'));
+    for (const r of rows) sec.appendChild(qCard(r, keep[r['מזהה']]));
+    list.appendChild(sec);
+  }
+  renderDone();
+  runButtons();
+}
+// ---------- the history (8.11 ערב, ינקי: "שלא יימחקו, שאוכל לחזור בי") ----------
+// questions_log.tsv (written by questions.py decide; served by serve.py /api/log): every answered item stays there. The
+// questions page shows it at the bottom as "בוצעו", newest first; "בטל" marks the row "לבטל" (column "ביטול"), and the next
+// "אשר" (questions.py decide) undoes the change by the column "שינויים" and puts the item back as an open question.
+let qlog = [], qlogOk = false;
+const logRevertCount = () => qlog.filter(r => (r['ביטול'] || '') === 'לבטל').length;
+async function logGet() {
+  try { const r = await fetch(API + '/api/log', { cache: 'no-store' }); const j = await r.json(); qlog = j.rows || []; qlogOk = true; }
+  catch (e) { qlogOk = false; }
+}
+async function logRevert(row, revert) {
+  const st = $('qStatus'); st.textContent = '';
+  try {
+    const r = await fetch(API + '/api/log', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: row['מזהה'], date: row['תאריך'], revert }) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    qlog = j.rows || []; qlogOk = true;
+    renderDone(); qCounters();
+    st.textContent = revert ? `"${row['הערה']}" מסומן לביטול. הביטול יבוצע בלחיצת "אשר" הבאה, והפריט יחזור לכאן כשאלה פתוחה.` : 'סימון הביטול הוסר.';
+  } catch (e) { st.textContent = 'לא נשמר: ' + e.message; }
+}
+function renderDone() {
+  const sec = $('qDone'); sec.innerHTML = '';
+  if (!questionsOk) return;
+  const rows = qlog.slice().reverse();                      // newest first
+  sec.appendChild(qEl('h3', null, `בוצעו (${rows.length})`));
+  sec.appendChild(qEl('p', 'q-help q-sec-help', 'מה שכבר נענה ובוצע ב"אשר", מהאחרון לראשון. "בטל" מחזיר את ההכרעה לאחור ב"אשר" הבא, והפריט חוזר למעלה כשאלה פתוחה.'));
+  if (!qlogOk) { sec.appendChild(qEl('p', 'q-help', 'הלוג לא נטען (השרת פועל?).')); return; }
+  if (!rows.length) { sec.appendChild(qEl('p', 'q-help', 'עדיין לא בוצע כלום.')); return; }
+  const ul = qEl('ul', 'q-hist');
+  for (const r of rows) {
+    const rev = r['ביטול'] || '', canUndo = !!(r['שינויים'] || '').trim();
+    const li = qEl('li', (rev === 'בוטל' ? 'reverted' : '') + ((r['מזהה'] || '').startsWith('mine_') ? ' q-mine-row' : '')); li.dataset.id = r['מזהה']; li.dataset.date = r['תאריך'];
+    li.appendChild(qEl('span', 'q-hist-name', r['הערה'] || r['מזהה']));
+    const a = qEl('span', 'q-hist-ans', r['תשובה'] || ''); a.dataset.a = r['תשובה'] || ''; li.appendChild(a);
+    li.appendChild(qEl('small', null, `${r['תאריך'] || ''}${(r['מזהה'] || '').startsWith('mine_') ? ' · מהתיקונים שלי' : ''}`));
+    if (rev === 'בוטל') li.appendChild(qEl('span', 'q-hist-state', 'בוטל'));
+    else if (rev === 'לבטל') li.appendChild(qEl('span', 'q-hist-state', 'מסומן לביטול, יבוצע ב"אשר" הבא'));
+    else if (!canUndo) li.appendChild(qEl('span', 'q-hist-state', 'אי אפשר לבטל (נרשם בלי פירוט השינויים)'));
+    if (rev !== 'בוטל' && canUndo) {
+      const b = qEl('button', 'q-undo', rev === 'לבטל' ? 'בטל את הביטול' : 'בטל'); b.type = 'button';
+      b.title = rev === 'לבטל' ? 'משאיר את ההכרעה כמו שהיא' : 'מחזיר את ההכרעה לאחור ב"אשר" הבא';
+      b.addEventListener('click', () => logRevert(r, rev !== 'לבטל'));
+      li.appendChild(b);
+    }
+    ul.appendChild(li);
+  }
+  sec.appendChild(ul);
+}
+// the pending page's bottom section "נשלחו": the "תיקון שלי" items that already left the pending file and wait (or were
+// answered) in the questions file; "לשמוע ולאשר" opens the questions page on the item.
+function renderSent() {
+  const sec = $('pSent'); sec.innerHTML = '';
+  if (!pendingOk) return;
+  const rows = pMine().slice().reverse();
+  sec.appendChild(qEl('h3', null, `נשלחו (${rows.length})`));
+  sec.appendChild(qEl('p', 'q-help q-sec-help', 'תיקונים שכבר נשלחו ומחכים בדף השאלות (בכחול). מה שבוצע ב"אשר" מופיע בתחתית דף השאלות, תחת "בוצעו".'));
+  if (!questionsOk) { sec.appendChild(qEl('p', 'q-help', 'קובץ השאלות לא נטען (השרת פועל?).')); return; }
+  if (!rows.length) { sec.appendChild(qEl('p', 'q-help', 'אין.')); return; }
+  const ul = qEl('ul', 'q-hist');
+  for (const r of rows) {
+    const ans = (r['תשובה'] || '').trim();
+    const li = qEl('li', 'q-mine-row'); li.dataset.id = r['מזהה'];
+    li.appendChild(qEl('span', 'q-hist-name', r['שם']));
+    const x = byId[r['פסקה']];
+    li.appendChild(qEl('small', null, `${r['שפה']} · ${r['מבטא']}` + (x ? ` · פסקה ${x.p.letter} · ${r['מספר משפט'] === 'כותרת' ? 'כותרת' : 'משפט ' + r['מספר משפט']}` : '')));
+    if (ans) { const a = qEl('span', 'q-hist-ans', ans); a.dataset.a = ans; li.appendChild(a); li.appendChild(qEl('span', 'q-hist-state', 'נענה, מחכה ל"אשר"')); }
+    else li.appendChild(qEl('span', 'q-hist-state', 'מחכה לתשובה שלך'));
+    const go = qEl('button', 'q-goto', 'לשמוע ולאשר'); go.type = 'button'; go.addEventListener('click', () => qGoTo(r['מזהה']));
+    li.appendChild(go); ul.appendChild(li);
+  }
+  sec.appendChild(ul);
+}
+function qShow(open) {
+  if (open && !$('ppage').hidden) pShow(false);          // one page at a time
+  if (open && $('fpage') && !$('fpage').hidden) $('fpage').hidden = true;
+  $('qpage').hidden = !open;
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) { qRender(); qGet(); } else qStopAudio();
+}
+$('qToggle').addEventListener('click', () => qShow(true));
+$('cntQuestions').addEventListener('click', () => qShow(true));
+$('qClose').addEventListener('click', () => qShow(false));
+document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('qpage').hidden) qShow(false); if (!$('ppage').hidden) pShow(false); });
+qGet();   // published copy: no polling
+
+// ---------- the page "תיקונים ממתינים" (8.11 ערב) ----------
+// The rows of תיקונים ממתינים.tsv: Yanki's corrections typed in the site and not sent yet ("מחק" removes a row). "שלח" runs
+// questions.py pending through serve.py: every row gets BEFORE / AFTER of its whole sentence and moves to the questions
+// page as a "תיקון שלי" item (blue). The header button counts the typed rows.
+let pSig = '';
+const pMine = () => questions.filter(r => r['סוג'] === MINE);
+const pMineOpen = () => pMine().filter(isOpen).length;
+function pCounters() {
+  const b = $('cntPending'), n = pending.length;
+  b.querySelector('b').textContent = pendingOk ? n : '–';
+  b.classList.toggle('has', pendingOk && n > 0);
+}
+function pRowTarget(r) {                                 // a pending row as a questions-file-like row, for qTarget / qTools
+  return { 'פסקה': r['פסקה'], 'מספר משפט': r['משפט'], 'מבטא': r['מבטא'], 'שפה': r['שפה'], 'משפט': r['טקסט המשפט'] };
+}
+function pCardTodo(r, keep) {                            // section א: one typed correction that waits for "בצע"
+  const card = qEl('article', 'q-card'); card.dataset.id = 'p:' + r.id;
+  const name = qEl('div', 'q-name'); name.appendChild(qEl('span', 'q-fix-text', r['תיקון']));
+  const x = byId[r['פסקה']], where = x ? `פסקה ${x.p.letter} · ${r['משפט'] === 'כותרת' ? 'כותרת' : 'משפט ' + r['משפט']}` : `${r['פסקה']} · ${r['משפט']}`;
+  name.appendChild(qEl('span', 'q-meta', `${r['שפה']} · ${r['מבטא']} · ${where} · ${r['תאריך'] || ''}` + (r['סטטוס'] && r['סטטוס'] !== 'ממתין' ? ` · ${r['סטטוס']}` : '')));
+  card.appendChild(name);
+  if (r['טקסט המשפט']) { const s = qEl('div', 'q-sent ' + (r['שפה'] === 'תרגום' ? 'he' : 'ar')); s.append(qEl('small', null, 'המשפט: '), document.createTextNode(r['טקסט המשפט'])); card.appendChild(s); }
+  const row = qEl('div', 'q-row');
+  row.appendChild(qEl('span', 'q-detail', 'עוד לא נשלח. "שלח" יכין לו "לפני" ו"אחרי" ויעביר אותו לדף השאלות.'));
+  const del = qEl('button', 'q-del', 'מחק'); del.type = 'button'; del.title = 'מחיקת התיקון מהקובץ';
+  del.addEventListener('click', () => apiPost({ action: 'delete', id: r.id }, s => { $('pStatus').textContent = s || ''; }).then(() => { $('pStatus').textContent = 'נמחק.'; }));
+  row.appendChild(del); card.appendChild(row);
+  qTools(pRowTarget(r), card, keep);                     // 9.11: the numbered word list AND a box for one more correction of the same sentence
+  return card;
+}
+function pRender() {
+  pSig = JSON.stringify([pending, pendingOk, questionsOk ? pMine() : null]);
+  const list = $('pList'), keep = keepOf(list);
+  list.innerHTML = '';
+  if (!pendingOk) {
+    $('pSum').textContent = '';
+    list.appendChild(qEl('p', 'q-status', 'השרת לא פועל: לחץ פעמיים על "הפעל את אתר תולדות.bat" כדי לראות את התיקונים ולשלוח.'));
+    runButtons(); return;
+  }
+  const sent = questionsOk ? pMineOpen() : null;
+  $('pSum').textContent = `${pending.length} תיקונים מחכים לשליחה` + (sent != null ? ` · ${sent} כבר נשלחו ומחכים לאישור שלך בדף השאלות` : '');
+  const secA = qEl('section', 'q-sec q-todo'); secA.appendChild(qEl('h3', null, `מחכים לשליחה (${pending.length})`));
+  if (!pending.length) secA.appendChild(qEl('p', 'q-help', 'אין. כל מה שהקלדת נשלח.'));
+  for (const r of pending) secA.appendChild(pCardTodo(r, keep['p:' + r.id]));
+  list.appendChild(secA);
+  renderSent();
+  runButtons();
+}
+function pMaybeRender(force) {                           // re-draw the open page only when its data changed (keeps typing)
+  if ($('ppage').hidden) return;
+  if (force || JSON.stringify([pending, pendingOk, questionsOk ? pMine() : null]) !== pSig) pRender();
+}
+function pShow(open) {
+  if (open && !$('qpage').hidden) qShow(false);          // one page at a time
+  if (open && $('fpage') && !$('fpage').hidden) $('fpage').hidden = true;
+  $('ppage').hidden = !open;
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) { pRender(); apiGet(); qGet(); } else qStopAudio();
+}
+$('pToggle').addEventListener('click', () => pShow(true));
+$('cntPending').addEventListener('click', () => pShow(true));
+$('pClose').addEventListener('click', () => pShow(false));
+
+// ---------- the page "לא הצליח" (9.11, צ'אט התיקונים) ----------
+// לא הצליח.tsv through serve.py (/api/failed): one row per correction whose AFTER still sounded wrong, with 3-5 options
+// (column "אפשרויות", JSON [{מזהה, תיאור, שמע אחרי}]). The page writes only "בחירה": an option id, "אף אחת", "החזר" or "".
+let failed = [], failedOk = false, fSig = '';
+const fOpen = () => failed.filter(r => r['סטטוס'] !== 'לא נפתר');
+function fChosenCount() { return failed.filter(r => (r['בחירה'] || '').trim()).length; }
+function fCounters() {
+  const b = $('cntFailed'); if (!b) return;
+  b.querySelector('b').textContent = failedOk ? fOpen().length : '–';
+  b.classList.toggle('has', failedOk && fOpen().length > 0);
+}
+async function fGet() {
+  try { const r = await fetch(API + '/api/failed', { cache: 'no-store' }); const j = await r.json(); failed = j.rows || []; failedOk = true; }
+  catch (e) { failedOk = false; }
+  fCounters(); runButtons();
+  if (!$('fpage').hidden && JSON.stringify(failed) !== fSig) fRender();
+}
+async function fChoose(id, choice) {
+  try {
+    const r = await fetch(API + '/api/failed', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, choice }) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    failed = j.rows || []; failedOk = true; fRender(); fCounters(); runButtons();
+    $('fStatus').textContent = choice ? 'נשמר. "אשר" יחיל.' : 'הבחירה בוטלה.';
+  } catch (e) { $('fStatus').textContent = 'לא נשמר: ' + e.message + ' (השרת פועל?)'; }
+}
+// 10.11: "✏️ כתוב IPA" - the box opens with the word's IPA today (what "לפני" says, column "היום"); a read-only Latin
+// transcription follows the typing; ˈ ː ʔ are put in by buttons; "הפק" checks the signs against the voice's own list
+// (/api/phonemes) and makes an option (questions.py failed_ipa: dry, cut from the sentence like every option).
+const fIpa = {};                                           // fid -> {open, value, msg}
+let fPhon = null;
+async function fPhonemes() {
+  if (!fPhon) { try { fPhon = new Set((await (await fetch(API + '/api/phonemes', { cache: 'no-store' })).json()).phonemes); } catch (e) { fPhon = null; } }
+  return fPhon;
+}
+function fIpaPanel(r) {
+  const fid = r['מזהה'], st = fIpa[fid], box = qEl('div', 'f-write');
+  if (!st || !st.open) return box;
+  box.appendChild(qEl('div', 'q-detail', 'כתוב איך המילה צריכה להישמע (IPA). התיבה נפתחת עם מה שהמערכת אומרת היום. ˈ לפני התנועה המוטעמת.'));
+  const row = qEl('div', 'q-row');
+  const inp = qEl('input', 'f-ipa f-write-ipa'); inp.type = 'text'; inp.dir = 'ltr'; inp.value = st.value; inp.setAttribute('aria-label', 'IPA');
+  const lat = qEl('span', 'f-lat f-write-lat', ipaLatin(inp.value)); lat.dir = 'ltr'; lat.title = 'תעתיק לטיני, לקריאה בלבד';
+  inp.addEventListener('input', () => { st.value = inp.value; lat.textContent = ipaLatin(inp.value); });
+  row.append(inp);
+  for (const [sign, name] of [['ˈ', 'הטעמה'], ['ː', 'הארכה'], ['ʔ', 'עצירה']]) {
+    const b = qEl('button', 'q-play f-sign', sign); b.type = 'button'; b.title = name;
+    b.addEventListener('click', () => {
+      const s0 = inp.selectionStart ?? inp.value.length, s1 = inp.selectionEnd ?? s0;
+      inp.value = inp.value.slice(0, s0) + sign + inp.value.slice(s1); st.value = inp.value; lat.textContent = ipaLatin(inp.value);
+      inp.focus(); inp.setSelectionRange(s0 + 1, s0 + 1);
+    });
+    row.appendChild(b);
+  }
+  const go = qEl('button', 'q-run f-write-go', 'הפק'); go.type = 'button';
+  go.addEventListener('click', async () => {
+    const v = inp.value.trim(), ph = await fPhonemes();
+    const bad = ph ? [...new Set([...v].filter(ch => ch !== 'ˈ' && !ph.has(ch)))] : [];
+    if (!v) { st.msg = 'התיבה ריקה.'; fRender(); return; }
+    if (bad.length) { st.msg = 'המנוע לא מכיר את הסימנים: ' + bad.map(ch => `"${ch}"`).join(' ') + '. מחק או החלף אותם.'; fRender(); return; }
+    if (![...v].some(ch => 'aeiou'.includes(ch))) { st.msg = 'אין במילה אף תנועה (a e i o u).'; fRender(); return; }
+    st.msg = '';
+    await fRun('/api/failed/ipa', { id: fid, ipa: v }, 'מפיק מה-IPA שכתבת', true);
+  });
+  row.append(qEl('span', null, 'קריאה:'), lat, go); box.appendChild(row);
+  if (st.msg) box.appendChild(qEl('div', 'q-detail f-write-msg', st.msg));
+  return box;
+}
+async function fAnswer(id, option, answer) {             // 10.11: "כן" / "לא" on one option (serve.py answer_failed)
+  try {
+    const r = await fetch(API + '/api/failed', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id, option, answer }) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    failed = j.rows || []; failedOk = true; fRender(); fCounters(); runButtons();
+    const row = failed.find(x => x['מזהה'] === id) || {};
+    $('fStatus').textContent = row['בחירה'] === 'אף אחת' ? 'כל האפשרויות "לא" = אף אחת. "אשר" יפיק אפשרויות חדשות.' : (answer === 'כן' ? 'נשמר. "אשר" יעביר את האפשרות לדף השאלות.' : 'נשמר.');
+  } catch (e) { $('fStatus').textContent = 'לא נשמר: ' + e.message + ' (השרת פועל?)'; }
+}
+function fCard(r, keep) {
+  const ch = (r['בחירה'] || '').trim();
+  const card = qEl('article', 'q-card q-mine-card' + (ch ? ' answered' : '')); card.dataset.id = r['מזהה'];
+  const x = byId[r['פסקה']];
+  const name = qEl('div', 'q-name', `${r['מילה']} · ${r['תיקון']}`);
+  name.appendChild(qEl('span', 'q-meta', `${r['שפה']} · ${r['מבטא']} · פסקה ${x ? x.p.letter : r['פסקה']} · ${r['מספר משפט'] === 'כותרת' ? 'כותרת' : 'משפט ' + r['מספר משפט']}` + (r['סטטוס'] ? ` · ${r['סטטוס']}` : '')));
+  card.appendChild(name);
+  const s = qEl('div', 'q-sent ' + (r['שפה'] === 'תרגום' ? 'he' : 'ar')); const text = r['משפט'] || '', w = r['מילה'] || '', at = w ? text.indexOf(w) : -1;
+  s.appendChild(qEl('small', null, 'המשפט: '));
+  if (at >= 0) s.append(document.createTextNode(text.slice(0, at)), qEl('b', null, w), document.createTextNode(text.slice(at + w.length))); else s.appendChild(document.createTextNode(text));
+  card.appendChild(s);
+  card.appendChild(qEl('div', 'q-detail', `נשמע: ${r['נשמע'] || '(לא נכתב)'} · ${r['השוואה'] || ''}`));
+  const top = qEl('div', 'q-row');
+  const b0 = qEl('button', 'q-play', '▶ לפני (היום)'); b0.type = 'button';
+  if (r['שמע לפני']) b0.addEventListener('click', () => qPlay(b0, r['שמע לפני'])); else b0.disabled = true;
+  top.appendChild(b0); card.appendChild(top);
+  let opts = []; try { opts = JSON.parse(r['אפשרויות'] || '[]'); } catch (e) {}
+  if (r['סטטוס'] === 'לא נפתר') card.appendChild(qEl('div', 'q-rec', 'לא נפתר: אף אפשרות לא הצליחה פעמיים. נרשם ביומן טעויות מנוע (לאימון מנוע עתידי).'));
+  const ol = qEl('ol', 'q-examples');
+  for (const o of opts) {
+    const li = qEl('li', 'q-example' + (o['הקלטה'] ? ' f-from-rec' : ''));
+    const dsc = qEl('div', null); if (o['שיטה']) dsc.appendChild(qEl('b', 'f-method', o['שיטה'] + ': ')); dsc.appendChild(document.createTextNode(o['תיאור'])); li.appendChild(dsc);
+    const pr = qEl('div', 'q-row');                         // 10.11: like a question: ▶ לפני, ▶ אחרי, כן, לא (one "כן" per item)
+    const bb = qEl('button', 'q-play f-before', '▶ לפני'); bb.type = 'button';
+    if (r['שמע לפני']) bb.addEventListener('click', () => qPlay(bb, r['שמע לפני'])); else bb.disabled = true;
+    const b = qEl('button', 'q-play f-after', '▶ אחרי'); b.type = 'button'; b.addEventListener('click', () => qPlay(b, o['שמע אחרי']));
+    pr.append(bb, b);
+    if (o['הקלטה']) {                                       // 9.11: compare with Yanki's own recording (never part of the audio)
+      const bm = qEl('button', 'q-play f-myrec', '▶ ההקלטה שלי'); bm.type = 'button'; bm.addEventListener('click', () => fPlayRec(bm, o['הקלטה'])); pr.appendChild(bm);
+    }
+    const no = (r['לא'] || '').split(',').filter(Boolean);
+    const state = ch === o['מזהה'] ? 'כן' : (no.includes(o['מזהה']) ? 'לא' : '');
+    for (const a of ['כן', 'לא']) {
+      const c = qEl('button', 'q-ans f-ans', a); c.type = 'button'; c.dataset.a = a; c.setAttribute('aria-pressed', String(state === a));
+      c.addEventListener('click', () => fAnswer(r['מזהה'], o['מזהה'], state === a ? '' : a)); pr.appendChild(c);
+    }
+    li.appendChild(pr); ol.appendChild(li);
+  }
+  if (opts.length) card.appendChild(ol);
+  if (r['סטטוס'] !== 'לא נפתר') {                          // 9.11: "הקלט" (10.11: "עוד 3" removed)
+    const tools = qEl('div', 'q-row f-tools');
+    const br = qEl('button', 'q-run f-recbtn', fRecording && fRecording.fid === r['מזהה'] ? '■ עצור' : '🎤 הקלט'); br.type = 'button';
+    br.addEventListener('click', () => fRecToggle(r['מזהה']));
+    const bw = qEl('button', 'q-run f-writebtn', '✏️ כתוב IPA'); bw.type = 'button';   // 10.11
+    bw.setAttribute('aria-pressed', String(!!(fIpa[r['מזהה']] && fIpa[r['מזהה']].open)));
+    bw.addEventListener('click', () => { const s = fIpa[r['מזהה']] || (fIpa[r['מזהה']] = { value: r['היום'] || '' }); s.open = !s.open; fRender(); });
+    tools.append(br, bw); card.appendChild(tools);
+    card.appendChild(fIpaPanel(r));
+    card.appendChild(fRecPanel(r['מזהה']));
+  }
+  const row = qEl('div', 'q-row');
+  for (const [label, val] of [['אף אחת', 'אף אחת'], ['↩ החזר לממתינים', 'החזר']]) {
+    const b = qEl('button', val === 'החזר' ? 'q-return' : 'q-ans', label); b.type = 'button'; b.setAttribute('aria-pressed', String(ch === val));
+    b.addEventListener('click', () => fChoose(r['מזהה'], ch === val ? '' : val)); row.appendChild(b);
+  }
+  card.appendChild(row);
+  qTools({ 'פסקה': r['פסקה'], 'מספר משפט': r['מספר משפט'], 'מבטא': r['מבטא'], 'שפה': r['שפה'], 'משפט': r['משפט'] }, card, keep, false);   // the numbered word list
+  return card;
+}
+// 9.11: "הקלט" - Yanki says the word; the browser records it (microphone, 127.0.0.1:8787) and makes a WAV; serve.py keeps
+// it in "הקלטות שלי" and hear_me.py (Whisper-Heb-IPA) gives the IPA, the sound lengths and the stress. The IPA is shown
+// with a Latin transcription for reading only, and can be corrected in the box; "הפק" makes the option (the engine's
+// voice, the IPA as is, the measured lengths by inner lengthening). The recording never goes into the audio.
+let fRecording = null;                                     // {fid, stream, ctx, proc, chunks, timer}
+const fRec = {};                                           // fid -> {state: 'hearing'|'done'|'error', msg, result, wav}
+const IPA_LAT = [['ʃ', 'sh'], ['χ', 'ch'], ['ts', 'tz'], ['ʁ', 'r'], ['ɡ', 'g'], ['j', 'y'], ['ʔ', "'"], ['dʒ', 'j'], ['tʃ', 'ch'], ['ʒ', 'zh']];
+function ipaLatin(ipa) {                                   // = produce.latin: stressed syllable in capitals
+  const V = 'aeiou';
+  ipa = (ipa || '').replace(/[^\p{L}\p{N}_ʃχʁɡʔˈʒ]/gu, '');
+  const s = ipa.indexOf('ˈ'), x = ipa.replace(/ˈ/g, '');
+  let out = x;
+  if (s >= 0) {
+    const start = s > 0 && !V.includes(x[s - 1]) ? s - 1 : s;
+    let end = s;
+    while (end < x.length && V.includes(x[end])) end++;
+    if (end < x.length && !V.includes(x[end]) && (end + 1 === x.length || !V.includes(x[end + 1]))) end++;
+    out = x.slice(0, start) + '\0' + x.slice(start, end) + '\u0001' + x.slice(end);
+  }
+  for (const [a, b] of IPA_LAT) out = out.split(a).join(b);
+  if (out.includes('\0')) { const [a, rest] = out.split('\0'); const [b, c] = rest.split('\u0001'); out = a + b.toUpperCase() + c; }
+  return out.replace(/^'+/, '');
+}
+function fPlayRec(btn, name) {
+  if (qPlayingBtn === btn) { qStopAudio(); return; }
+  qStopAudio(); if (playing) $('playBtn').click();
+  qAudio.src = API + '/api/myrec?f=' + encodeURIComponent(name);
+  qAudio.play().then(() => { qPlayingBtn = btn; btn.classList.add('playing'); }).catch(e => { $('fStatus').textContent = 'לא ניתן לנגן: ' + e.message; });
+}
+function wavBase64(chunks, sr) {                           // 16-bit PCM mono WAV
+  const n = chunks.reduce((a, c) => a + c.length, 0), buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
+  v.setUint16(22, 1, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  w(36, 'data'); v.setUint32(40, n * 2, true);
+  let o = 44;
+  for (const c of chunks) for (let i = 0; i < c.length; i++, o += 2) { const s = Math.max(-1, Math.min(1, c[i])); v.setInt16(o, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  const u8 = new Uint8Array(buf); let bin = '';
+  for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+async function fRecToggle(fid) {
+  if (fRecording) { const was = fRecording.fid; await fRecStop(); if (was === fid) return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createMediaStreamSource(stream), proc = ctx.createScriptProcessor(4096, 1, 1), chunks = [];
+    proc.onaudioprocess = e => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    src.connect(proc); proc.connect(ctx.destination);
+    fRecording = { fid, stream, ctx, proc, chunks, timer: setTimeout(() => fRecStop(), 8000) };   // at most 8 seconds
+    fRec[fid] = { state: 'recording', msg: 'מקליט… אמור את המילה ולחץ "עצור".' };
+    qStopAudio(); fRender();
+  } catch (e) { fRec[fid] = { state: 'error', msg: 'אין גישה למיקרופון: ' + e.message }; fRender(); }
+}
+async function fRecStop() {
+  const R = fRecording; if (!R) return;
+  fRecording = null; clearTimeout(R.timer);
+  R.proc.disconnect(); R.stream.getTracks().forEach(t => t.stop());
+  const sr = R.ctx.sampleRate; R.ctx.close();
+  // 9.11 (late): nothing is sent yet. Yanki listens to his recording, records again if needed, and "אשר" sends it.
+  const b64 = wavBase64(R.chunks, sr);
+  const old = fRec[R.fid]; if (old && old.url) URL.revokeObjectURL(old.url);
+  const bytes = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0));
+  fRec[R.fid] = { state: 'recorded', wav64: b64, url: URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' })) };
+  fRender();
+}
+function fPlayLocal(btn, url) {                            // Yanki's recording before it is sent (kept in the page only)
+  if (qPlayingBtn === btn) { qStopAudio(); return; }
+  qStopAudio(); if (playing) $('playBtn').click();
+  qAudio.src = url;
+  qAudio.play().then(() => { qPlayingBtn = btn; btn.classList.add('playing'); }).catch(e => { $('fStatus').textContent = 'לא ניתן לנגן: ' + e.message; });
+}
+async function fRecSend(fid) {                             // "אשר": IPA + lengths (hear_me.py), then the option in the engine's voice
+  const st = fRec[fid]; if (!st || !st.wav64) return;
+  fRec[fid] = { ...st, state: 'hearing', msg: 'מזהה את ההקלטה (Whisper) ומודד אורכים… בפעם הראשונה אחרי הפעלת השרת זה לוקח כ-2 דקות.' };
+  fRender();
+  let res;
+  try {
+    const r = await fetch(API + '/api/failed/hear', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: fid, wav: st.wav64 }) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    if (!j.ok) throw new Error((j.result && j.result.error) || 'לא זוהה');
+    res = { state: 'done', result: j.result, wav: j.wav, ipa: j.result.ipa, url: st.url };
+  } catch (e) { fRec[fid] = { ...st, state: 'recorded', msg: 'הזיהוי לא הצליח: ' + e.message + '. אפשר להקליט שוב.' }; fRender(); return; }
+  fRec[fid] = res; fRender();
+  await fRun('/api/failed/voice', { id: fid, ipa: res.ipa, measure: res.result, wav: res.wav }, 'מפיק מההקלטה בקול המנוע', true);
+}
+function fRecPanel(fid) {
+  const box = qEl('div', 'f-rec'); const st = fRec[fid];
+  if (!st) return box;
+  if (st.state === 'recorded') {                           // 9.11 (late): listen, record again, or "אשר"
+    if (st.msg) box.appendChild(qEl('div', 'q-detail', st.msg));
+    box.appendChild(qEl('div', 'q-detail', 'ההקלטה עוד לא נשלחה. אפשר לשמוע אותה, להקליט שוב, או לאשר.'));
+    const row = qEl('div', 'q-row');
+    const bp = qEl('button', 'q-play f-mine-play', '▶ ההקלטה שלי'); bp.type = 'button'; bp.addEventListener('click', () => fPlayLocal(bp, st.url));
+    const ba = qEl('button', 'q-run f-rec-ok', 'אשר'); ba.type = 'button'; ba.addEventListener('click', () => fRecSend(fid));
+    const bx = qEl('button', 'q-return f-rec-again', '🎤 הקלט שוב'); bx.type = 'button'; bx.addEventListener('click', () => fRecToggle(fid));
+    row.append(bp, ba, bx); box.appendChild(row);
+    return box;
+  }
+  if (st.state !== 'done') { box.appendChild(qEl('div', 'q-detail', st.msg || '')); return box; }
+  const res = st.result || {};
+  box.appendChild(qEl('div', 'q-detail', 'ההקלטה נשמרה בתיקייה "הקלטות שלי" והאפשרות מההקלטה מופקת (היא תופיע רביעית). זוהה (IPA); אם משהו לא נכון, תקן בתיבה ולחץ "הפק שוב":'));
+  const row = qEl('div', 'q-row');
+  const inp = qEl('input', 'f-ipa'); inp.type = 'text'; inp.dir = 'ltr'; inp.value = st.ipa || ''; inp.setAttribute('aria-label', 'IPA');
+  const lat = qEl('span', 'f-lat', ipaLatin(inp.value)); lat.dir = 'ltr'; lat.title = 'תעתיק לטיני, לקריאה בלבד';
+  inp.addEventListener('input', () => { st.ipa = inp.value; lat.textContent = ipaLatin(inp.value); });
+  const go = qEl('button', 'q-run f-voice', 'הפק שוב'); go.type = 'button';
+  go.addEventListener('click', () => fRun('/api/failed/voice', { id: fid, ipa: inp.value, measure: res, wav: st.wav }, 'מפיק מההקלטה (בקול המנוע)'));
+  row.append(inp, qEl('span', null, 'קריאה:'), lat, go); box.appendChild(row);
+  const sw = res.stress_whisper, sm = res.stress_measured;
+  const vow = n => n === null || n === undefined ? '-' : `התנועה ה-${n + 1}`;
+  const lens = (res.sounds || []).map((s, k) => `${s[0]} ${Number(s[1]).toFixed(2)}` + (res.engine && res.engine[k] ? ` (מנוע ${Number(res.engine[k][1]).toFixed(2)})` : '')).join(' · ');
+  box.appendChild(qEl('div', 'q-detail', `Whisper כתב: ${res.whisper || ''} · הטעמה: לפי Whisper ${vow(sw)}, לפי המדידה ${vow(sm)} · אורכי הצלילים בהקלטה (שניות): ${lens}` + (res.dropped ? ` · סימנים שהושמטו: ${res.dropped}` : '')));
+  return box;
+}
+async function fRun(path, body, label, keepRec) {          // "עוד 3" / "הפק": a run of questions.py in serve.py
+  $('fStatus').textContent = label + '…';
+  try {
+    const r = await fetch(API + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    runActive = true; runButtons();
+    for (;;) {
+      await new Promise(res => setTimeout(res, 1500));
+      const st = await (await fetch(API + '/api/run', { cache: 'no-store' })).json();
+      if (!st.running) { runActive = false; $('fStatus').textContent = (st.code === 0 ? '✓ ' : '✗ ') + (st.lines || []).slice(-3).join(' · '); break; }
+      $('fStatus').textContent = `${label}… (${st.n_lines || 0} שורות)`;
+    }
+    if (body.ipa !== undefined && !keepRec) delete fRec[body.id];   // after "אשר" the IPA box stays, for "הפק שוב"
+    await fGet(); fRender(); runButtons();
+  } catch (e) { runActive = false; $('fStatus').textContent = 'לא בוצע: ' + e.message + ' (השרת פועל?)'; }
+}
+function fRender() {
+  fSig = JSON.stringify(failed);
+  const list = $('fList'), keep = keepOf(list); list.innerHTML = '';
+  if (!failedOk) { $('fSum').textContent = ''; list.appendChild(qEl('p', 'q-status', 'השרת לא פועל: לחץ פעמיים על "הפעל את אתר תולדות.bat".')); return; }
+  $('fSum').textContent = `${fOpen().length} פריטים מחכים · בחרת ב-${fChosenCount()}` + (failed.length > fOpen().length ? ` · ${failed.length - fOpen().length} לא נפתרו` : '');
+  if (!failed.length) list.appendChild(qEl('p', 'q-help', 'אין. כשתענה "לא הצליח" על תיקון בדף השאלות ותלחץ "אשר", הוא יעבור לכאן.'));
+  for (const r of failed) list.appendChild(fCard(r, keep[r['מזהה']]));
+}
+function fShow(open) {
+  if (open) { if (!$('qpage').hidden) qShow(false); if (!$('ppage').hidden) pShow(false); }
+  $('fpage').hidden = !open;
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) { fRender(); fGet(); } else qStopAudio();
+}
+$('cntFailed').addEventListener('click', () => fShow(true));
+$('fClose').addEventListener('click', () => fShow(false));
+$('fApplyTop').addEventListener('click', () => { fShow(false); qShow(true); runStart('decide'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('fpage').hidden) fShow(false); });
+fGet();   // published copy: no polling
+
+// ---------- "שלח" and "אשר" (8.11 ערב): running questions.py from the site ----------
+// POST /api/run {cmd} starts `questions.py pending` ("שלח") or `questions.py decide` ("אשר") in serve.py; GET /api/run is
+// polled every 1.5 s and the last lines are shown under the button. One run at a time. When "שלח" ends the questions page
+// opens (the new blue items); when "אשר" ends the page reloads (new audio) and re-opens the questions page with a summary.
+const RUN_LABEL = { pending: 'שלח', decide: 'אשר' };
+let runState = null, runTimer = 0, runStartedHere = null;
+const runOut = cmd => $(cmd === 'pending' ? 'pRunOut' : 'qRunOut');
+const runHint = cmd => $(cmd === 'pending' ? 'pSendHint' : 'qApplyHint');
+const runMsg = cmd => $(cmd === 'pending' ? 'pRunMsg' : 'qRunMsg');          // the running / finished message (not touched by runButtons)
+function runSummary(lines, cmd) {                          // a friendly line out of questions.py's output
+  const txt = lines.join('\n');
+  let m;
+  if (cmd === 'pending' && (m = txt.match(/PENDING: (\d+) rows moved/))) return `נשלחו ${m[1]} תיקונים. הם מחכים לך בדף השאלות, בכחול.`;
+  if (cmd === 'decide' && (m = txt.match(/DECIDED (\d+), LEFT (\d+)/))) return `בוצעו ${m[1]} תשובות; ${m[2]} פריטים נשארו בדף.`;
+  if (/Traceback|ERROR|Error/.test(txt)) return 'נכשל. העתק את השורות שלמטה (או את הקובץ מערכת/אתר/run_log.txt) ל"קלוד קוד - תיקונים".';
+  return lines.length ? lines[lines.length - 1] : '';
+}
+function runButtons() {                                    // enable / disable the four buttons by the data and by a running job
+  const busy = !!(runState && runState.running);
+  const nSend = pendingOk ? pending.length : 0, nApply = questionsOk ? qDecidedCount() : 0;
+  for (const id of ['pSend', 'pSendTop']) { const b = $(id); b.disabled = busy || !nSend || !pendingOk; b.textContent = busy && runState.cmd === 'pending' ? 'שולח…' : `שלח${nSend ? ` (${nSend})` : ''}`; }
+  for (const id of ['qApply', 'qApplyTop']) { const b = $(id); b.disabled = busy || !nApply || !questionsOk; b.textContent = busy && runState.cmd === 'decide' ? 'מבצע…' : `אשר${nApply ? ` (${nApply})` : ''}`; }
+  $('pSendHint').textContent = busy ? '' : (!pendingOk ? '' : nSend ? `${nSend} תיקונים ייכנסו לדף השאלות עם "לפני" ו"אחרי". לוקח כמה דקות.` : 'אין תיקונים לשליחה.');
+  $('qApplyHint').textContent = busy ? '' : (!questionsOk ? '' : nApply ? `${nApply} פעולות (תשובות כן / לא${logRevertCount() ? ' וביטולים' : ''}) יבוצעו, והפסקאות שהשתנו יופקו מחדש. לוקח כמה דקות.` : 'סמן כן / לא לפחות בפריט אחד.');
+}
+function showRun(st) {                                     // the progress under the button of the running / last command
+  if (!st || !st.cmd || String(st.cmd).startsWith('failed_')) return;   // 9.11: "עוד 3" / "הפק" show their progress on the page "לא הצליח"
+  const out = runOut(st.cmd), msg = runMsg(st.cmd);
+  out.hidden = false; out.textContent = (st.lines || []).join('\n'); out.scrollTop = out.scrollHeight;
+  if (st.running) msg.textContent = `${RUN_LABEL[st.cmd] || st.cmd}: רץ מאז ${st.started} (${st.n_lines || 0} שורות)…`;
+  else msg.textContent = (st.code === 0 ? '✓ ' : '✗ ') + runSummary(st.lines || [], st.cmd);
+}
+async function runPoll() {
+  try {
+    const r = await fetch(API + '/api/run', { cache: 'no-store' }); runState = await r.json();
+  } catch (e) { runState = null; }
+  runButtons();
+  if (runState && runState.running) { showRun(runState); runTimer = setTimeout(runPoll, 1500); return; }
+  if (runState && runState.cmd && runStartedHere === runState.cmd) {           // a run started from this page just ended
+    const done = runState; runStartedHere = null; showRun(done);
+    await apiGet(); await qGet();                           // re-read both files while runActive still blocks the auto-reload
+    runActive = false; runButtons();
+    if (done.cmd === 'pending' && done.code === 0) { qShow(true); $('qStatus').textContent = '✓ ' + runSummary(done.lines, 'pending'); }
+    if (done.cmd === 'decide' && done.code === 0) {        // new audio: reload, and come back to the questions page with the summary
+      try { sessionStorage.setItem(KEY + ':afterRun', JSON.stringify({ cmd: 'decide', msg: runSummary(done.lines, 'decide') })); } catch (e) {}
+      location.reload();
+    }
+  }
+}
+async function runStart(cmd) {
+  $('qStatus').textContent = ''; $('pStatus').textContent = '';
+  try {
+    const r = await fetch(API + '/api/run', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ cmd }) });
+    const j = await r.json();
+    if (j.error) throw new Error(j.error);
+    runState = j; runStartedHere = cmd; runActive = true; showRun(j); runButtons();
+    clearTimeout(runTimer); runTimer = setTimeout(runPoll, 1500);
+  } catch (e) { runMsg(cmd).textContent = 'לא התחיל: ' + e.message + ' (השרת פועל?)'; }
+}
+for (const id of ['pSend', 'pSendTop']) $(id).addEventListener('click', () => runStart('pending'));
+for (const id of ['qApply', 'qApplyTop']) $(id).addEventListener('click', () => runStart('decide'));
+runPoll();                                                 // a run may still be going (the page was reloaded meanwhile)
+try {                                                      // after "אשר": the page was reloaded for the new audio; re-open the questions page
+  const after = JSON.parse(sessionStorage.getItem(KEY + ':afterRun') || 'null');
+  if (after) { sessionStorage.removeItem(KEY + ':afterRun'); setTimeout(() => { qShow(true); $('qStatus').textContent = '✓ ' + after.msg; }, 300); }
+} catch (e) {}
+audio.addEventListener('pause', () => { if (reloadWhenIdle && !playing) location.reload(); });
+
+// ---------- start ----------
+render();
+refreshControls();
+applySpeed();
+if (state.para && byId[state.para]) markCurrent(byId[state.para].idx);
+updateUi();
+window.__site = { state, audio, PARAS, LISTEN_MODES, get cur() { return cur; }, get playing() { return playing; }, get lastGapMs() { return lastGapMs; }, webAudio: false, get packLoaded() { return packLoaded; },
+  get pending() { return pending; }, get pendingOk() { return pendingOk; }, get pronKey() { return pronKey; }, startPara, play, pause, jump, apiGet,
+  get questions() { return questions; }, qGet, qAudio, qStopAudio, qRender, qGoTo, qTarget, wordsFor, rowsFor, mineFor,
+  pRender, pGoTo, pShow, pMine, pMineOpen, get qlog() { return qlog; }, logGet, renderDone, renderSent };
+})();
+</script>
+<script>
+// 9.11: "פרסם" - only on the local site (127.0.0.1 / localhost, served by serve.py); never in the published copy.
+(() => {
+  const local = !window.PUBLISHED_READONLY && ['127.0.0.1', 'localhost'].includes(location.hostname);
+  const btn = document.getElementById('pubBtn'), msg = document.getElementById('pubMsg');
+  if (!local || !btn) return;
+  btn.hidden = false;
+  const show = html => { msg.hidden = false; msg.innerHTML = html; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const done = r => {
+    btn.disabled = false;
+    if (r && r.ok) show(`פורסם בשעה ${esc(r.time)} – <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a> (מתעדכן תוך כדקה)`);
+    else show(`<span style="color:#b00">הפרסום נכשל: ${esc((r && r.error) || 'שגיאה לא ידועה')}</span>`);
+  };
+  const poll = async () => {
+    try {
+      const s = await (await fetch('/api/publish', { cache: 'no-store' })).json();
+      if (s.running) { btn.disabled = true; show('מפרסם...'); return setTimeout(poll, 2000); }
+      if (s.result) done(s.result);
+    } catch (e) { btn.disabled = false; show('<span style="color:#b00">השרת המקומי לא עונה. האם החלון של השרת פתוח?</span>'); }
+  };
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; show('מפרסם...');
+    try {
+      const r = await fetch('/api/publish', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
+      const j = await r.json();
+      if (!r.ok && !j.running) { btn.disabled = false; return show(`<span style="color:#b00">${esc(j.error || 'שגיאה')}</span>`); }
+    } catch (e) { btn.disabled = false; return show('<span style="color:#b00">השרת המקומי לא עונה. האם החלון של השרת פתוח?</span>'); }
+    setTimeout(poll, 1500);
+  });
+  poll();   // a publish that is already running (or just finished) shows its state
+})();
+</script>
+</body>
+</html>
