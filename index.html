@@ -43,6 +43,8 @@ h1 { font-size: 1.35rem; margin: 0; font-weight: 600; }
 .seg button .badge { margin-inline-start: 3px; }
 .short { display: none; }
 select.speedsel { display: none; }
+select.voicesel { font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 4px; max-width: 11em; }
+#settings.lv2 .ctl.voice > .lbl { display: none; }
 select.segsel, select.speedsel { display: none; font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 2px; min-width: 0; width: 100%; }
 .switch { display: flex; align-items: center; gap: 6px; min-height: 32px; cursor: pointer; user-select: none; white-space: nowrap; font-size: .9rem; }
 .switch input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
@@ -246,6 +248,15 @@ body.pron-open .pron { display: block; }
 .pron-words li.active { background: var(--hl); }
 /* 10.11: quick phonetic fix */
 #pronWords li.qf-word { cursor: pointer; }
+.old-mech { display: none !important; }                    /* 10.11: the old correction machinery, hidden */
+#pronWords .lx-mark { color: var(--accent); margin-inline-start: 3px; font-size: .8em; }
+#pronWords .lx-preview { column-span: all; display: block; border: 1px solid var(--accent); border-radius: 8px; padding: 8px; margin: 6px 0;
+  font-family: var(--font-ui); font-size: .85rem; line-height: 1.5; direction: rtl; }
+#pronWords .lx-preview h4 { margin: 6px 0 2px; font-size: .9rem; }
+#pronWords .lx-preview ul { margin: 0; padding-inline-start: 18px; }
+#pronWords .lx-preview .lx-ipa { direction: ltr; unicode-bidi: isolate; font-family: ui-monospace, Consolas, monospace; font-size: .8rem; }
+#pronWords .lx-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+#pronStatus .lx-undo { margin-inline-start: 8px; }
 #pronWords .qf-box, #pronWords .qf-tag { column-span: all; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 4px 0 6px;
   font-family: var(--font-ui); font-size: .85rem; direction: rtl; }
 #pronWords .qf-wrap { flex-direction: column; align-items: stretch; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
@@ -306,9 +317,9 @@ body.pron-open .pron { display: block; }
     <span class="draft">טיוטה פנימית</span>
     <h1>זוהר פרשת תולדות</h1>
     <span class="counters">
-      <button type="button" class="cnt" id="cntPending" title="התיקונים שלך: מה שהקלדת ועוד לא בוצע, ומה שמחכה לאישור שלך (לחיצה פותחת את הדף)">תיקונים ממתינים: <b>–</b></button>
-      <button type="button" class="cnt" id="cntQuestions" title="שאלות של Claude Code שעדיין בלי תשובה (שאלות Claude Code.tsv)">שאלות פתוחות: <b>–</b></button>
-      <button type="button" class="cnt" id="cntFailed" title="תיקונים שה'אחרי' שלהם עדיין לא נשמע טוב (לחיצה פותחת את הדף)">לא הצליח: <b>–</b></button>
+      <button type="button" class="cnt old-mech" id="cntPending" title="התיקונים שלך: מה שהקלדת ועוד לא בוצע, ומה שמחכה לאישור שלך (לחיצה פותחת את הדף)">תיקונים ממתינים: <b>–</b></button>
+      <button type="button" class="cnt old-mech" id="cntQuestions" title="שאלות של Claude Code שעדיין בלי תשובה (שאלות Claude Code.tsv)">שאלות פתוחות: <b>–</b></button>
+      <button type="button" class="cnt old-mech" id="cntFailed" title="תיקונים שה'אחרי' שלהם עדיין לא נשמע טוב (לחיצה פותחת את הדף)">לא הצליח: <b>–</b></button>
       <button type="button" class="cnt" id="pubBtn" hidden title="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
       <span id="pubMsg" hidden style="font-size:.8rem"></span>
     </span>
@@ -316,6 +327,7 @@ body.pron-open .pron { display: block; }
   <div id="settings" class="settings" role="toolbar" aria-label="הגדרות">
     <div class="ctl sel"><span class="lbl">שפה</span><div class="row seg" id="langRow"></div><select class="segsel" id="langSel" aria-label="שפה" title="שפה"></select></div>
     <div class="ctl sel"><span class="lbl">מבטא</span><div class="row seg" id="accentRow"></div><select class="segsel" id="accentSel" aria-label="מבטא" title="מבטא"></select></div>
+    <div class="ctl voice"><span class="lbl">מגיד שיעור</span><select class="voicesel" id="voiceSel" aria-label="מגיד שיעור" title="מגיד שיעור (הקול)"></select></div>
     <div class="ctl sel"><span class="lbl">מצב</span><div class="row seg" id="modeRow"></div><select class="segsel" id="modeSel" aria-label="מצב השמעה" title="מצב השמעה"></select></div>
     <div class="ctl"><label class="switch" title="השמע כותרות"><input type="checkbox" id="titlesToggle"><span class="full">השמע כותרות</span><span class="short">כותרות</span></label></div>
     <div class="ctl speed"><span class="lbl">מהירות</span>
@@ -344,8 +356,8 @@ body.pron-open .pron { display: block; }
     </div>
     <div id="now">מוכן</div>
     <button type="button" id="pronToggle" class="pron-toggle">דף הגייה</button>
-    <button type="button" id="pToggle" class="pron-toggle">תיקונים ממתינים</button>
-    <button type="button" id="qToggle" class="pron-toggle">שאלות</button>
+    <button type="button" id="pToggle" class="pron-toggle old-mech">תיקונים ממתינים</button>
+    <button type="button" id="qToggle" class="pron-toggle old-mech">שאלות</button>
     <div class="progress"><div id="bar"></div></div>
     <div class="player-msg" id="playerMsg"></div>
   </div>
@@ -357,12 +369,14 @@ body.pron-open .pron { display: block; }
   <div class="pron-where" id="pronWhere">לחץ על משפט, או נגן, ורשימת המילים שלו תופיע כאן.</div>
   <ol id="pronWords" class="pron-words"></ol>
   <div class="pron-section">
-    <div class="pron-lbl">תיקון חדש (שורה לכל תיקון: "12 ד", "12 P", "12 PL", "12 H", "12 H ל2")</div>
-    <textarea id="fixText" rows="3" placeholder="12 ד&#10;15 P"></textarea>
-    <div class="row"><button type="button" id="fixSave">שמור לתיקונים ממתינים</button><span class="pron-total" id="pronTotal"></span></div>
+    <!-- 10.11: the old machinery (pending / שלח / אשר / questions / "לא הצליח") is replaced by the pronunciation dictionary:
+         click a word, fix it, "תקן רק כאן" or "תקן בכל מקום" (lexfix.py). The old elements stay hidden (class old-mech). -->
+    <div class="pron-lbl">לתיקון: לחץ על מילה ברשימה. ▪ = מילה שתוקנה רק במקום הזה.</div>
+    <div class="old-mech"><textarea id="fixText" rows="3" placeholder="12 ד&#10;15 P"></textarea>
+    <div class="row"><button type="button" id="fixSave">שמור לתיקונים ממתינים</button><span class="pron-total" id="pronTotal"></span></div></div>
     <div class="pron-status" id="pronStatus"></div>
   </div>
-  <div class="pron-section">
+  <div class="pron-section old-mech">
     <div class="pron-lbl">תיקונים ממתינים למשפט הזה <span id="pronCount"></span></div>
     <ul id="pronPending" class="pron-pending"></ul>
     <!-- 8.11 (שיחת האתר): the "תיקון שלי" items of this sentence that wait in שאלות Claude Code.tsv for Yanki's ear
@@ -374,7 +388,7 @@ body.pron-open .pron { display: block; }
 
 <!-- 6.11: the page "שאלות Claude Code" - the questions of שאלות Claude Code.tsv (built by questions.py). The page only
      writes the answer column, through serve.py (/api/questions). -->
-<section id="qpage" class="qpage" aria-label="שאלות" hidden>
+<section id="qpage" class="qpage old-mech" aria-label="שאלות" hidden>
   <div class="q-inner">
     <div class="q-head">
       <h2>שאלות</h2>
@@ -402,7 +416,7 @@ body.pron-open .pron { display: block; }
 <!-- 8.11 (ערב): the page "תיקונים ממתינים" - the rows of תיקונים ממתינים.tsv: Yanki's corrections typed in the site, not sent
      yet. "שלח" runs questions.py pending (through serve.py): every row gets BEFORE / AFTER and moves to the questions page as a
      "תיקון שלי" item (blue). -->
-<section id="ppage" class="qpage ppage" aria-label="תיקונים ממתינים" hidden>
+<section id="ppage" class="qpage ppage old-mech" aria-label="תיקונים ממתינים" hidden>
   <div class="q-inner">
     <div class="q-head">
       <h2>תיקונים ממתינים</h2>
@@ -430,7 +444,7 @@ body.pron-open .pron { display: block; }
 <!-- 9.11 (צ'אט התיקונים): the page "לא הצליח" - corrections whose AFTER still sounded wrong (לא הצליח.tsv, written by
      questions.py decide). For each: the sentence, the word, what Yanki heard, the numbered word list, and 3-5 options with
      their AFTER; "זאת" / "אף אחת" / "החזר לממתינים" write only the column "בחירה" (serve.py /api/failed); "אשר" applies. -->
-<section id="fpage" class="qpage" aria-label="לא הצליח" hidden>
+<section id="fpage" class="qpage old-mech" aria-label="לא הצליח" hidden>
   <div class="q-inner">
     <div class="q-head">
       <h2>לא הצליח</h2>
@@ -448,6 +462,7 @@ body.pron-open .pron { display: block; }
 
 <script src="catalog.js"></script>
 <script src="words.js"></script>
+<script src="voices.js"></script>
 <script>
 (() => {
 'use strict';
@@ -490,7 +505,10 @@ const LISTEN_MODES = [
   ['drill', '🔁', 'לחזרה ושינון'],
 ];
 const LISTEN_DEFAULT = 'focus';
-const DEFAULTS = { lang: 'both', accent: 'sephardi', mode: 'one', titles: false, speed: 1, listen: LISTEN_DEFAULT, para: null };
+// 10.11 "מגיד שיעור": the voices come from voices.json (via voices.js, built by voices_audio.py); michael = the catalog's audio
+const VOICES = window.VOICES || { default: 'michael', voices: [{ id: 'michael', name: 'מיכאל', catalog: true }], audio: {} };
+const VOICE_DEFAULT = VOICES.default || 'michael';
+const DEFAULTS = { voice: VOICE_DEFAULT, lang: 'both', accent: 'sephardi', mode: 'one', titles: false, speed: 1, listen: LISTEN_DEFAULT, para: null };
 
 // ---------- remembered choices (localStorage, never required) ----------
 function load() {
@@ -504,6 +522,7 @@ if (!LISTEN_MODES.some(m => m[0] === state.listen)) state.listen = LISTEN_DEFAUL
 delete state.eq; delete state.preset;                       // the old equalizer settings (removed 5.11) are ignored
 if (!CAT.accents.some(a => a.code === state.accent)) state.accent = 'sephardi';   // e.g. a saved "polish" (removed 5.11)
 if (!LANG_OPTS.some(o => o[0] === state.lang)) state.lang = 'both';
+if (!VOICES.voices.some(v => v.id === state.voice)) state.voice = VOICE_DEFAULT;
 if (!MODE_OPTS.some(o => o[0] === state.mode)) state.mode = 'one';
 
 // ---------- catalog helpers ----------
@@ -511,10 +530,17 @@ const PARAS = [];
 CAT.articles.forEach((a, ai) => a.paragraphs.forEach((p, pi) => PARAS.push({ a, p, ai, pi, idx: PARAS.length })));
 const byId = Object.fromEntries(PARAS.map(x => [x.p.id, x]));
 const hasFile = s => !!(s && s.file);
-const audioOf = (p, lang, accent) => { const s = p.audio && p.audio[lang] && p.audio[lang][accent]; return hasFile(s) ? s : null; };
-const titleAudioOf = (p, accent) => { const s = p.title_audio && p.title_audio.he && p.title_audio.he[accent]; return hasFile(s) ? s : null; };
+const voiceOf = id => VOICES.voices.find(v => v.id === id) || VOICES.voices[0];
+const voiceAudio = (vid, key) => { const s = ((VOICES.audio || {})[vid] || {})[key]; return hasFile(s) ? s : null; };
+const audioOfV = (vid, p, lang, accent) => voiceOf(vid).catalog
+  ? (s => hasFile(s) ? s : null)(p.audio && p.audio[lang] && p.audio[lang][accent]) : voiceAudio(vid, `${p.id}_${lang}_${accent}`);
+const titleAudioOfV = (vid, p, accent) => voiceOf(vid).catalog
+  ? (s => hasFile(s) ? s : null)(p.title_audio && p.title_audio.he && p.title_audio.he[accent]) : voiceAudio(vid, `${p.id}_title_he_${accent}`);
+const audioOf = (p, lang, accent) => audioOfV(state.voice, p, lang, accent);
+const titleAudioOf = (p, accent) => titleAudioOfV(state.voice, p, accent);
 const langHasAudio = (lang, accent) => PARAS.some(x => audioOf(x.p, lang, accent));
 const accentHasAudio = accent => CAT.languages.some(l => langHasAudio(l.code, accent)) || PARAS.some(x => titleAudioOf(x.p, accent));
+const voiceHasAccent = (vid, accent) => PARAS.some(x => CAT.languages.some(l => audioOfV(vid, x.p, l.code, accent)) || titleAudioOfV(vid, x.p, accent));
 const langsOf = () => (state.lang === 'both' || state.lang === 'pair') ? ['ar', 'he'] : [state.lang];
 const accentName = code => (CAT.accents.find(a => a.code === code) || {}).name || code;
 const langName = code => code === 'ar' ? 'לשון הזוהר' : 'תרגום';
@@ -633,6 +659,14 @@ function refreshControls() {
          : !langHasAudio(code, state.accent), 'langSel');
   segButtons('accentRow', CAT.accents.map(a => [a.code, a.name]), () => state.accent, v => { state.accent = v; onLangOrAccentChanged(); },
     code => !accentHasAudio(code), 'accentSel');
+  const vs = document.getElementById('voiceSel');                 // 10.11 "מגיד שיעור"
+  vs.innerHTML = VOICES.voices.map(v => {
+    const ok = voiceHasAccent(v.id, state.accent);
+    const why = ok ? '' : (v.note ? ` (${v.note})` : ' (לא זמין במבטא הזה)');
+    return `<option value="${v.id}"${ok ? '' : ' disabled'} title="${v.name}${why}">${v.name}${ok ? '' : ' – ' + (v.note || 'לא זמין במבטא הזה')}</option>`;
+  }).join('');
+  vs.value = state.voice;
+  vs.onchange = () => { state.voice = vs.value; refreshControls(); save(); onLangOrAccentChanged(); };
   segButtons('modeRow', MODE_OPTS, () => state.mode, v => { state.mode = v; }, null, 'modeSel');
   document.getElementById('titlesToggle').checked = !!state.titles;
   document.getElementById('speedVal').textContent = state.speed + '×';
@@ -646,7 +680,7 @@ function refreshControls() {
   const missing = langsOf().filter(l => !langHasAudio(l, state.accent));
   const notice = document.getElementById('notice');
   notice.textContent = missing.length
-    ? `אין עדיין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)} (בקרוב)` +
+    ? `אין עדיין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)}${voiceOf(state.voice).catalog ? '' : ' בקול ' + voiceOf(state.voice).name} (בקרוב)` +
       (missing.length < langsOf().length ? ` - מנוגנת ${langName(langsOf().find(l => !missing.includes(l)))} בלבד.` : '.')
     : '';
   refreshListenUi();
@@ -1020,11 +1054,11 @@ function qfDecorate() {
     li.classList.add('qf-word');
     li.title = 'לחץ לתיקון פונטי מהיר של המילה הזו';
     li.onclick = e => {
-      if (e.target.closest('.qf-box, .qf-tag')) return;
+      if (e.target.closest('.qf-box, .qf-tag, .lx-preview')) return;
       qfOpen = qfOpen && qfOpen.idx === idx && qfOpen.pid === t.pid && qfOpen.i === t.i ? null : { ...t, idx };
       qfDecorate();
     };
-    li.querySelectorAll('.qf-box, .qf-tag').forEach(x => x.remove());
+    li.querySelectorAll('.qf-box, .qf-tag, .lx-mark, .lx-preview').forEach(x => x.remove());
     const q = qfFor(t, idx);
     if (q) {
       const tag = document.createElement('div'); tag.className = 'qf-tag';
@@ -1040,7 +1074,9 @@ function qfDecorate() {
       }
       li.appendChild(tag);
     }
+    if (lexIsPlace(t, idx)) li.appendChild(Object.assign(document.createElement('span'), { className: 'lx-mark', textContent: '▪', title: 'תוקן רק במקום הזה' }));
     if (qfOpen && qfOpen.idx === idx && qfOpen.pid === t.pid && qfOpen.i === t.i && qfOpen.lang === t.lang) li.appendChild(qfBox(t, idx, words[idx] || []));
+    if (lexPreview && lexPreview.key === `${t.pid}|${t.lang}|${t.i}|${idx}|${t.accent}` && lexReqs[lexPreview.id]) li.appendChild(lexPreviewBox(t, lexReqs[lexPreview.id]));
   });
 }
 const qfTabs = {};                                        // `${pid}|${lang}|${i}|${idx}` -> {tab, mode, latin, heard, m, short}
@@ -1101,9 +1137,7 @@ function qfShortPane(t, idx, w, st) {                      // 10.11: the shortha
     box.appendChild(r2); setTimeout(() => inp.focus(), 0);
   }
   const r3 = document.createElement('div'); r3.className = 'qf-row';
-  const go = document.createElement('button'); go.type = 'button'; go.className = 'qf-go'; go.textContent = 'הפק';
-  go.addEventListener('click', () => qfProduce(t, idx, w, { short: st.short, m: st.m, heard: st.heard }));
-  r3.append(show, go); box.appendChild(r3);
+  r3.append(show, ...lexButtons(t, idx, w, () => ({ short: st.short, m: st.m, heard: st.heard }))); box.appendChild(r3);   // 10.11
   if (st.heard && st.mode !== 'heard') box.appendChild(Object.assign(document.createElement('div'), { className: 'qf-hint', textContent: `נשמע כמו: ${st.heard}` }));
   refresh();
   return box;
@@ -1128,10 +1162,103 @@ function qfIpaPane(t, idx, w, st) {
     });
     box.appendChild(b);
   }
-  const go = document.createElement('button'); go.type = 'button'; go.className = 'qf-go'; go.textContent = 'הפק';
-  go.addEventListener('click', () => qfProduce(t, idx, w, inp.value.trim()));
-  box.append(' ', lat, ' ', go);
+  box.append(' ', lat, ' ', ...lexButtons(t, idx, w, () => inp.value.trim()));   // 10.11: two buttons instead of "הפק"
   setTimeout(() => inp.focus(), 0);
+  return box;
+}
+// ---------- 10.11 (2): the pronunciation dictionary (lexfix.py through serve.py /api/lex) ----------
+// "תקן רק כאן" = this place only, at once. "תקן בכל מקום" = a preview first (what changed, where, the rule, 3 examples);
+// "אשר" / "רק המילה הזאת בלי הכלל" / "בטל". After every change: "הסתיים, שונה ב-X מקומות" and "בטל" (everything back).
+let lexReqs = {}, lexPlaces = [], lexPreview = null;        // lexPreview = {key, id}
+async function lexGet() {
+  try { const j = await (await fetch(API + '/api/lex', { cache: 'no-store' })).json(); lexReqs = j.requests || {}; lexPlaces = j.places || []; }
+  catch (e) { lexReqs = {}; lexPlaces = []; }
+}
+function lexIsPlace(t, idx) {
+  const pl = `${t.pid}:${t.i === 'title' ? 'כותרת' : t.i + 1}:${idx + 1}`;
+  return lexPlaces.some(p => p.place === pl && p.accent === accentName(t.accent) && p.lang === TSV_LANG[t.lang]);
+}
+function lexButtons(t, idx, w, what) {
+  const a = document.createElement('button'); a.type = 'button'; a.className = 'qf-go lx-here'; a.textContent = 'תקן רק כאן';
+  a.addEventListener('click', () => lexFix(t, idx, w, what(), 'here'));
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'qf-go lx-all'; b.textContent = 'תקן בכל מקום';
+  b.addEventListener('click', () => lexFix(t, idx, w, what(), 'preview'));
+  return [a, b];
+}
+async function lexFix(t, idx, w, what, action) {
+  const body = { action, pid: t.pid, lang: t.lang, accent: t.accent, si: t.i, index: idx, n: w[0] };
+  if (typeof what === 'string') {
+    const ipa = what, ph = await fPhonemes();
+    const bad = ph ? [...new Set([...ipa].filter(ch => ch !== 'ˈ' && !ph.has(ch)))] : [];
+    if (!ipa) { qfSay('התיבה ריקה.'); return; }
+    if (bad.length) { qfSay('המנוע לא מכיר את הסימנים: ' + bad.map(ch => `"${ch}"`).join(' ') + '. מחק או החלף אותם.'); return; }
+    if (![...ipa].some(ch => 'aeiou'.includes(ch))) { qfSay('אין במילה אף תנועה (a e i o u).'); return; }
+    body.ipa = ipa;
+  } else {
+    if (!what.short) { qfSay('בחר קודם אות או כפתור (הקיצור ריק).'); return; }
+    Object.assign(body, what);
+  }
+  try {
+    const r = await fetch(API + '/api/lex', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    qfSay(action === 'here' ? 'מפיק...' : 'מכין תצוגה מקדימה...');
+    const st = await qfWaitRun();
+    await lexGet();
+    const q = lexReqs[j.id] || {};
+    if (q.status === 'preview') { qfOpen = null; lexPreview = { key: `${t.pid}|${t.lang}|${t.i}|${idx}|${t.accent}`, id: j.id }; qfDecorate(); qfSay(q.msg || ''); return; }
+    if (q.status === 'done') { lexReload(t, q.msg, j.id); return; }
+    qfSay(q.msg || ('לא בוצע: ' + (st.lines || []).filter(l => /PROBLEM|LEX/.test(l)).slice(-3).join(' · ')));
+  } catch (e) { qfSay('לא התחיל: ' + e.message + ' (השרת פועל?)'); }
+}
+function lexReload(t, note, undoId) {
+  try { sessionStorage.setItem(KEY + ':quick', JSON.stringify({ pid: t.pid, lang: t.lang, i: t.i, accent: t.accent, note, undo: undoId })); } catch (e) {}
+  location.reload();
+}
+async function lexAct(t, id, action, mode) {
+  try {
+    const r = await fetch(API + '/api/lex', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, id, mode }) });
+    const j = await r.json(); if (j.error) throw new Error(j.error);
+    if (action === 'cancel') { lexPreview = null; qfDecorate(); qfSay('בוטל. לא שונה כלום.'); return; }
+    qfSay(action === 'undo' ? 'מבטל ומפיק מחדש...' : 'מחיל ומפיק את הפסקאות שהשתנו...');
+    await qfWaitRun(); await lexGet();
+    const q = lexReqs[id] || {};
+    lexPreview = null;
+    lexReload(t, q.msg || 'הסתיים.', action === 'undo' ? null : id);
+  } catch (e) { qfSay('לא בוצע: ' + e.message + ' (השרת פועל?)'); }
+}
+function lexPreviewBox(t, q) {
+  const pv = q.preview || {}, box = document.createElement('div'); box.className = 'lx-preview';
+  const h = (txt) => Object.assign(document.createElement('h4'), { textContent: txt });
+  const list = (items) => { const ul = document.createElement('ul'); for (const it of items) { const li = document.createElement('li'); if (typeof it === 'string') li.textContent = it; else li.append(...it); ul.appendChild(li); } return ul; };
+  const ipa = (x) => Object.assign(document.createElement('span'), { className: 'lx-ipa', textContent: x });
+  box.append(h('מה הבנתי'), list(pv.understood || []));
+  box.append(h(`איפה אשנה (${pv.places || 0} מקומות)`), list((pv.where || []).map(w => [`${w.form} · ${w.lang} ${w.accent} · ${w.count} ${w.count === 1 ? 'מקום' : 'מקומות'}: `,
+    ipa(`${w.lat_before} (${w.before})`), ' ← ', ipa(`${w.lat_after} (${w.after})`)])));
+  if ((pv.skipped || []).length) box.append(h('לא אשנה'), list(pv.skipped));
+  if ((pv.notes || []).length) box.append(list(pv.notes));
+  if (pv.rule) {
+    box.append(h(`כלל כללי (${pv.places_rule || 0} מקומות נוספים)`), Object.assign(document.createElement('div'), { textContent: pv.rule.sentence }),
+      list((pv.rule.words || []).concat(pv.rule.more ? [`ועוד ${pv.rule.more}`] : [])));
+  }
+  if ((pv.examples || []).length) {
+    box.append(h('דוגמאות (המילה ו-3 המילים שלפניה)'));
+    const ul = document.createElement('ul');
+    for (const e of pv.examples) {
+      const li = document.createElement('li'); li.append(`${e.form} · ${e.lang} ${e.accent} · ${e.place} `);
+      for (const [label, f] of [['▶ לפני', e.before], ['▶ אחרי', e.after]]) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'q-play lx-play'; b.textContent = label;
+        b.addEventListener('click', () => qPlay(b, f)); li.appendChild(b);
+      }
+      ul.appendChild(li);
+    }
+    box.appendChild(ul);
+  }
+  const btns = document.createElement('div'); btns.className = 'lx-btns';
+  const mk = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = label; b.addEventListener('click', fn); btns.appendChild(b); };
+  mk('אשר', 'lx-ok', () => lexAct(t, q.id, 'apply', 'all'));
+  if (pv.rule) mk('רק המילה הזאת בלי הכלל', 'lx-word', () => lexAct(t, q.id, 'apply', 'word'));
+  mk('בטל', 'lx-cancel', () => lexAct(t, q.id, 'cancel'));
+  box.appendChild(btns);
   return box;
 }
 async function qfProduce(t, idx, w, what) {                // what = the typed IPA (tab "פונטי") or {short, m, heard} (tab "קיצור")
@@ -1171,7 +1298,7 @@ async function qfAct(t, q, act) {
     qfSay('הסתיים: נשאר. ' + line + (/נשלחו/.test(line) ? ' (בדף השאלות).' : ''));
   } catch (e) { qfSay('לא בוצע: ' + e.message + ' (השרת פועל?)'); }
 }
-qfGet().then(() => {
+Promise.all([qfGet(), lexGet()]).then(() => {
   if (pronKey) qfDecorate();
   let after = null;                                        // after "הפק" / "בטל": the page was reloaded for the new audio
   try { after = JSON.parse(sessionStorage.getItem(KEY + ':quick') || 'null'); sessionStorage.removeItem(KEY + ':quick'); } catch (e) {}
@@ -1180,6 +1307,11 @@ qfGet().then(() => {
   document.body.classList.add('pron-open');
   pronShow(after.pid, after.lang, after.i);
   qfSay(after.note || '');
+  if (after.undo) {                                        // 10.11: "בטל" = everything that change did goes back
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'lx-undo'; b.textContent = 'בטל';
+    b.addEventListener('click', () => lexAct({ pid: after.pid, lang: after.lang, i: after.i, accent: after.accent }, after.undo, 'undo'));
+    $('pronStatus').appendChild(b);
+  }
   setTimeout(() => startPara(x.idx, { skipTitle: true, onlySentence: { lang: after.lang, i: after.i } }), 300);   // the sentence plays by itself
 });
 function rowsFor(t) {                                    // the pending corrections (תיקונים ממתינים.tsv) of one sentence
