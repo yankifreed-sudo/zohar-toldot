@@ -336,7 +336,7 @@ body.pron-open .pron { display: block; }
       <button type="button" class="cnt old-mech" id="cntQuestions" title="שאלות של Claude Code שעדיין בלי תשובה (שאלות Claude Code.tsv)">שאלות פתוחות: <b>–</b></button>
       <button type="button" class="cnt old-mech" id="cntFailed" title="תיקונים שה'אחרי' שלהם עדיין לא נשמע טוב (לחיצה פותחת את הדף)">לא הצליח: <b>–</b></button>
       <a class="cnt" id="pagesBtn" hidden href="attempts/pages.html" title="כל דפי הבדיקה וההשוואה שבנינו, לפי שלבים (18.11)">דפי ניסיון</a>
-      <button type="button" class="cnt" id="pubBtn" hiddentitle="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
+      <button type="button" class="cnt" id="pubBtn" hidden title="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
       <span id="pubMsg" hidden style="font-size:.8rem"></span>
     </span>
   </div>
@@ -360,10 +360,12 @@ body.pron-open .pron { display: block; }
   </div>
   <div class="att-row" id="attRow" hidden>
     <span class="lbl">מגיד שיעור</span>
+    <select id="attView" aria-label="חלוקה" title="איך לחלק את ההקראות: לפי השיטה שבה נעשו, או לפי איך שהן נשמעות" hidden><option value="method">לפי שיטה</option><option value="sound">לפי שמיעה</option></select>
     <select id="attCat" aria-label="קטגוריה" title="קטגוריה (שלב בעבודה)"></select>
     <span id="attVoiceSlot"></span>
     <button type="button" id="attPrev" title="הניסיון הקודם לפי המספר (מדלג על מה שלא זמין בשפה ובמבטא שנבחרו)">→ הקודם</button>
     <button type="button" id="attNext" title="הניסיון הבא לפי המספר (מדלג על מה שלא זמין בשפה ובמבטא שנבחרו)">הבא ←</button>
+    <label class="lbl" style="color:#0b57d0;font-weight:600;cursor:pointer" title="להציג רק את ההקראות ששונות באמת זו מזו (מסומנות ★ בכחול). השאר: הבדלים קטנים, באפור"><input type="checkbox" id="attMainOnly"> רק עיקריים ★</label>
     <span class="att-info" id="attInfo"></span>
   </div>
   <div class="notice" id="notice"></div>
@@ -488,6 +490,7 @@ body.pron-open .pron { display: block; }
 <script src="words.js"></script>
 <script src="voices.js"></script>
 <script src="attempts.js"></script>
+<script src="attempts_groups.js"></script>
 <script>
 (() => {
 'use strict';
@@ -537,6 +540,18 @@ const VOICE_DEFAULT = VOICES.default || 'michael';
 // attempt a number (by time) and a category, and adds the old attempts' paragraph-א audio as extra voices (engine "archive").
 // Without attempts.js (the published copy) the menu is the plain voice list, as before.
 const ATT = (window.ATTEMPTS && Array.isArray(window.ATTEMPTS.attempts)) ? window.ATTEMPTS : null;
+// 18.11: two views - "לפי שיטה" (source · engine · addition) and "לפי שמיעה" (how it sounds); main = clearly different
+function attApplyView(view) {
+  const AG = window.ATT_GROUPS; if (!ATT || !AG) return;
+  const snd = view === 'sound' && AG.sound_groups;
+  ATT.cats = snd ? AG.sound_groups : AG.groups;
+  for (const a of ATT.attempts) {
+    const g = AG.map[a.num];
+    a.main = !!(g && g[1]);
+    a.cat = snd ? (AG.sound_map[a.num] || 0) : (g ? g[0] : 0);
+  }
+}
+attApplyView((() => { try { return (JSON.parse(localStorage.getItem(KEY) || '{}') || {}).attView; } catch (e) { return null; } })());
 if (ATT) {
   VOICES.audio = VOICES.audio || {};
   const shown = new Set(VOICES.voices.map(v => v.id));
@@ -704,7 +719,9 @@ const pad2 = n => String(n).padStart(2, '0');
 const attOk = vid => langsOf().some(l => PARAS.some(x => audioOfV(vid, x.p, l, state.accent))) ||
                      (state.titles && PARAS.some(x => titleAudioOfV(vid, x.p, state.accent)));
 const attCats = () => (ATT.cats || []).concat(VOICES.voices.some(v => !v.att.cat) ? [{ id: 0, name: 'נוספו אחר כך' }] : []);
-const attText = v => `${pad2(v.att.num)} · ${v.att.label}` + (v.att.rejected ? ` ✗ נפסל · ${v.att.rejected}` : '');
+// RLM marks keep "34 · Piper · מיכאל" in this order inside the right-to-left menu (a number next to Latin letters jumps otherwise)
+const RLM = '‏';
+const attText = v => (RLM + (v.att.main ? '★ ' : '') + `${pad2(v.att.num)} · ${v.att.label}` + (v.att.rejected ? ` ✗ נפסל · ${v.att.rejected}` : '')).replace(/ · /g, ` ${RLM}·${RLM} `);
 const esc1 = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function attCurCat() {
   const cats = attCats().map(c => c.id);
@@ -720,7 +737,9 @@ function refreshAttempts(vs) {
   const cs = document.getElementById('attCat'), cat = attCurCat();
   cs.innerHTML = attCats().map(c => {
     const all = VOICES.voices.filter(v => v.att.cat === c.id), ok = all.filter(v => attOk(v.id)).length;
-    return `<option value="${c.id}" title="${esc1(c.about || c.name)}">${c.id ? c.id + '. ' : ''}${esc1(c.name)} (${ok}/${all.length})</option>`;
+    const mn = all.filter(v => v.att.main).length;
+    const cnt = window.ATT_GROUPS ? `${mn} עיקריים, ${all.length} בסך הכול` : `${ok}/${all.length}`;
+    return `<option value="${c.id}" title="${esc1(c.about || c.name)}">${c.id ? c.id + '. ' : ''}${esc1(c.name)} (${cnt})</option>`;
   }).join('');
   cs.value = String(cat);
   cs.onchange = () => {
@@ -729,17 +748,26 @@ function refreshAttempts(vs) {
     if (first && first.id !== state.voice) { state.voice = first.id; refreshControls(); save(); afterVoiceChange(); }
     else { refreshControls(); save(); }
   };
-  const list = VOICES.voices.filter(v => v.att.cat === cat);
+  const av = document.getElementById('attView');
+  if (av) {
+    av.hidden = !window.ATT_GROUPS; av.value = state.attView === 'sound' ? 'sound' : 'method';
+    av.onchange = () => { state.attView = av.value; attApplyView(state.attView); state.attCat = voiceOf(state.voice).att.cat; refreshControls(); save(); };
+  }
+  const mo = document.getElementById('attMainOnly');
+  if (mo) { mo.checked = !!state.attMainOnly; mo.onchange = () => { state.attMainOnly = mo.checked; refreshControls(); save(); }; }
+  const showV = v => !state.attMainOnly || v.att.main || v.id === state.voice;
+  const list = VOICES.voices.filter(v => v.att.cat === cat && showV(v));
   let opts = list.map(v => {
     const ok = attOk(v.id), why = ok ? '' : ' – ' + (v.note || 'לא זמין');
-    return `<option value="${v.id}"${ok ? '' : ' disabled'} title="${esc1(attText(v) + (v.att.about ? ' – ' + v.att.about : ''))}">${esc1(attText(v) + why)}</option>`;
+    const sty = window.ATT_GROUPS ? (v.att.main ? ' style="font-weight:700;color:#0b57d0"' : ' style="color:#8a8a8a"') : '';
+    return `<option value="${v.id}"${sty}${ok ? '' : ' disabled'} title="${esc1(attText(v) + (v.att.about ? ' – ' + v.att.about : ''))}">${esc1(attText(v) + why)}</option>`;
   }).join('');
   if (!list.some(v => v.id === state.voice)) opts = `<option value="" disabled>— בחר ניסיון —</option>` + opts;
   vs.innerHTML = opts;
   vs.value = list.some(v => v.id === state.voice) ? state.voice : '';
   vs.onchange = () => { if (!vs.value) return; state.voice = vs.value; state.attCat = voiceOf(vs.value).att.cat; refreshControls(); save(); afterVoiceChange(); };
   const order = VOICES.voices, k = order.findIndex(v => v.id === state.voice);
-  const step = d => { for (let j = k + d; j >= 0 && j < order.length; j += d) if (attOk(order[j].id)) return order[j]; return null; };
+  const step = d => { for (let j = k + d; j >= 0 && j < order.length; j += d) if (attOk(order[j].id) && (!state.attMainOnly || order[j].att.main)) return order[j]; return null; };
   const prev = document.getElementById('attPrev'), next = document.getElementById('attNext');
   const pv = step(-1), nv = step(1);
   prev.disabled = !pv; next.disabled = !nv;
@@ -809,7 +837,9 @@ function refreshControls() {
   const missing = langsOf().filter(l => !langHasAudio(l, state.accent));
   const notice = document.getElementById('notice');
   notice.textContent = missing.length
-    ? `אין עדיין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)}${voiceOf(state.voice).catalog ? '' : ' בקול ' + voiceOf(state.voice).name} (בקרוב)` +
+    ? (voiceOf(state.voice).engine === 'archive'                  // 18.11: an old attempt - it will not be made again
+       ? `בניסיון הזה אין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)}`
+       : `אין עדיין הקלטה ב${missing.map(langName).join(' וב')} במבטא ${accentName(state.accent)}${voiceOf(state.voice).catalog ? '' : ' בקול ' + voiceOf(state.voice).name} (בקרוב)`) +
       (missing.length < langsOf().length ? ` - מנוגנת ${langName(langsOf().find(l => !missing.includes(l)))} בלבד.` : '.')
     : '';
   refreshListenUi();
