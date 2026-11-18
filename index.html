@@ -45,6 +45,21 @@ h1 { font-size: 1.35rem; margin: 0; font-weight: 600; }
 select.speedsel { display: none; }
 select.voicesel { font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 4px; max-width: 11em; }
 #settings.lv2 .ctl.voice > .lbl { display: none; }
+/* 18.11 "כל הניסיונות" (attempts.js, local only): a row of its own under the settings - category, attempt, previous / next */
+.att-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 0 16px 8px; font-family: var(--font-ui); font-size: .85rem; }
+.att-row[hidden] { display: none; }
+.att-row .lbl { font-size: .75rem; color: var(--muted); white-space: nowrap; }
+.att-row select { font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 4px; }
+.att-row #attCat { max-width: 19em; }
+.att-row #voiceSel { max-width: 30em; }
+.att-row button { min-height: 32px; padding: 2px 10px; white-space: nowrap; }
+.att-row .att-info { flex: 1 1 18em; min-width: 0; color: var(--muted); font-size: .78rem; line-height: 1.35; }
+.att-row .att-info b { color: var(--fg); font-weight: 600; }
+.att-row .att-info .rej { color: #b3261e; font-weight: 600; }
+body.has-att #settings .ctl.voice { display: none; }
+a.cnt { text-decoration: none; color: var(--fg); display: inline-block; }
+a.cnt[hidden] { display: none; }
+@media (max-width: 640px) { .att-row { padding: 0 8px 8px; } .att-row select { flex: 1 1 100%; max-width: none !important; } }
 select.segsel, select.speedsel { display: none; font-family: var(--font-ui); font-size: .85rem; min-height: 32px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--fg); padding: 2px 2px; min-width: 0; width: 100%; }
 .switch { display: flex; align-items: center; gap: 6px; min-height: 32px; cursor: pointer; user-select: none; white-space: nowrap; font-size: .9rem; }
 .switch input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
@@ -320,7 +335,8 @@ body.pron-open .pron { display: block; }
       <button type="button" class="cnt old-mech" id="cntPending" title="התיקונים שלך: מה שהקלדת ועוד לא בוצע, ומה שמחכה לאישור שלך (לחיצה פותחת את הדף)">תיקונים ממתינים: <b>–</b></button>
       <button type="button" class="cnt old-mech" id="cntQuestions" title="שאלות של Claude Code שעדיין בלי תשובה (שאלות Claude Code.tsv)">שאלות פתוחות: <b>–</b></button>
       <button type="button" class="cnt old-mech" id="cntFailed" title="תיקונים שה'אחרי' שלהם עדיין לא נשמע טוב (לחיצה פותחת את הדף)">לא הצליח: <b>–</b></button>
-      <button type="button" class="cnt" id="pubBtn" hidden title="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
+      <a class="cnt" id="pagesBtn" hidden href="attempts/pages.html" title="כל דפי הבדיקה וההשוואה שבנינו, לפי שלבים (18.11)">דפי ניסיון</a>
+      <button type="button" class="cnt" id="pubBtn" hiddentitle="מעלה את הגרסה הנוכחית לקישור הציבורי (GitHub Pages). מתעדכן תוך כדקה.">פרסם</button>
       <span id="pubMsg" hidden style="font-size:.8rem"></span>
     </span>
   </div>
@@ -341,6 +357,14 @@ body.pron-open .pron { display: block; }
         <span class="hint">בחירה לתצוגה בלבד בשלב זה: השמע מתנגן כמו שהוא.</span>
       </div>
     </div>
+  </div>
+  <div class="att-row" id="attRow" hidden>
+    <span class="lbl">מגיד שיעור</span>
+    <select id="attCat" aria-label="קטגוריה" title="קטגוריה (שלב בעבודה)"></select>
+    <span id="attVoiceSlot"></span>
+    <button type="button" id="attPrev" title="הניסיון הקודם לפי המספר (מדלג על מה שלא זמין בשפה ובמבטא שנבחרו)">→ הקודם</button>
+    <button type="button" id="attNext" title="הניסיון הבא לפי המספר (מדלג על מה שלא זמין בשפה ובמבטא שנבחרו)">הבא ←</button>
+    <span class="att-info" id="attInfo"></span>
   </div>
   <div class="notice" id="notice"></div>
 </header>
@@ -463,6 +487,7 @@ body.pron-open .pron { display: block; }
 <script src="catalog.js"></script>
 <script src="words.js"></script>
 <script src="voices.js"></script>
+<script src="attempts.js"></script>
 <script>
 (() => {
 'use strict';
@@ -508,6 +533,27 @@ const LISTEN_DEFAULT = 'focus';
 // 10.11 "מגיד שיעור": the voices come from voices.json (via voices.js, built by voices_audio.py); michael = the catalog's audio
 const VOICES = window.VOICES || { default: 'michael', voices: [{ id: 'michael', name: 'מיכאל', catalog: true }], audio: {} };
 const VOICE_DEFAULT = VOICES.default || 'michael';
+// 18.11 "כל הניסיונות": attempts.js (built by מערכת/אתר/attempts_build.py, local only - not published) gives every reading
+// attempt a number (by time) and a category, and adds the old attempts' paragraph-א audio as extra voices (engine "archive").
+// Without attempts.js (the published copy) the menu is the plain voice list, as before.
+const ATT = (window.ATTEMPTS && Array.isArray(window.ATTEMPTS.attempts)) ? window.ATTEMPTS : null;
+if (ATT) {
+  VOICES.audio = VOICES.audio || {};
+  const shown = new Set(VOICES.voices.map(v => v.id));
+  for (const a of ATT.attempts) {
+    const vid = a.voice || a.id;
+    if (!a.voice) {                                              // an old attempt: its own audio
+      VOICES.voices.push({ id: a.id, name: a.label, engine: 'archive', catalog: false, combos: null, note: '' });
+      VOICES.audio[a.id] = a.audio || {};
+    } else if (!shown.has(a.voice)) continue;                    // a voice of voices.json that is not in this copy
+    const v = VOICES.voices.find(x => x.id === vid);
+    if (v) { v.att = a; v.name = a.label; }
+  }
+  const last = Math.max(0, ...ATT.attempts.map(a => a.num));
+  let extra = 0;                                                 // a voice added to voices.json after attempts.js was built
+  for (const v of VOICES.voices) if (!v.att) v.att = { num: last + (++extra), cat: 0, label: v.name, id: v.id };
+  VOICES.voices.sort((x, y) => x.att.num - y.att.num);
+}
 const DEFAULTS = { voice: VOICE_DEFAULT, lang: 'both', accent: 'sephardi', mode: 'one', titles: false, speed: 1, listen: LISTEN_DEFAULT, para: null };
 
 // ---------- remembered choices (localStorage, never required) ----------
@@ -652,6 +698,86 @@ function fitSettings() {
   document.documentElement.style.setProperty('--hdr', document.querySelector('header.top').offsetHeight + 'px');
   placeListenMenu();
 }
+// ---------- 18.11 "כל הניסיונות": category + attempt + previous / next (only with attempts.js) ----------
+const pad2 = n => String(n).padStart(2, '0');
+// available = has audio in the chosen language(s) and accent (any paragraph; the old attempts have paragraph א only)
+const attOk = vid => langsOf().some(l => PARAS.some(x => audioOfV(vid, x.p, l, state.accent))) ||
+                     (state.titles && PARAS.some(x => titleAudioOfV(vid, x.p, state.accent)));
+const attCats = () => (ATT.cats || []).concat(VOICES.voices.some(v => !v.att.cat) ? [{ id: 0, name: 'נוספו אחר כך' }] : []);
+const attText = v => `${pad2(v.att.num)} · ${v.att.label}` + (v.att.rejected ? ` ✗ נפסל · ${v.att.rejected}` : '');
+const esc1 = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function attCurCat() {
+  const cats = attCats().map(c => c.id);
+  return cats.includes(state.attCat) ? state.attCat : voiceOf(state.voice).att.cat;
+}
+function refreshAttempts(vs) {
+  document.body.classList.add('has-att');
+  const pb = document.getElementById('pagesBtn');               // "דפי ניסיון": only where attempts.js is (the local site)
+  if (pb && !window.PUBLISHED_READONLY) { pb.hidden = false; pb.textContent = `דפי ניסיון (${(ATT.pages || []).length})`; }
+  const row = document.getElementById('attRow'); row.hidden = false;
+  const slot = document.getElementById('attVoiceSlot');
+  if (vs.parentElement !== slot) slot.appendChild(vs);           // the attempt select moves from the settings row to this row
+  const cs = document.getElementById('attCat'), cat = attCurCat();
+  cs.innerHTML = attCats().map(c => {
+    const all = VOICES.voices.filter(v => v.att.cat === c.id), ok = all.filter(v => attOk(v.id)).length;
+    return `<option value="${c.id}" title="${esc1(c.about || c.name)}">${c.id ? c.id + '. ' : ''}${esc1(c.name)} (${ok}/${all.length})</option>`;
+  }).join('');
+  cs.value = String(cat);
+  cs.onchange = () => {
+    state.attCat = Number(cs.value);
+    const first = VOICES.voices.find(v => v.att.cat === state.attCat && attOk(v.id));
+    if (first && first.id !== state.voice) { state.voice = first.id; refreshControls(); save(); afterVoiceChange(); }
+    else { refreshControls(); save(); }
+  };
+  const list = VOICES.voices.filter(v => v.att.cat === cat);
+  let opts = list.map(v => {
+    const ok = attOk(v.id), why = ok ? '' : ' – ' + (v.note || 'לא זמין');
+    return `<option value="${v.id}"${ok ? '' : ' disabled'} title="${esc1(attText(v) + (v.att.about ? ' – ' + v.att.about : ''))}">${esc1(attText(v) + why)}</option>`;
+  }).join('');
+  if (!list.some(v => v.id === state.voice)) opts = `<option value="" disabled>— בחר ניסיון —</option>` + opts;
+  vs.innerHTML = opts;
+  vs.value = list.some(v => v.id === state.voice) ? state.voice : '';
+  vs.onchange = () => { if (!vs.value) return; state.voice = vs.value; state.attCat = voiceOf(vs.value).att.cat; refreshControls(); save(); afterVoiceChange(); };
+  const order = VOICES.voices, k = order.findIndex(v => v.id === state.voice);
+  const step = d => { for (let j = k + d; j >= 0 && j < order.length; j += d) if (attOk(order[j].id)) return order[j]; return null; };
+  const prev = document.getElementById('attPrev'), next = document.getElementById('attNext');
+  const pv = step(-1), nv = step(1);
+  prev.disabled = !pv; next.disabled = !nv;
+  prev.title = pv ? 'הקודם: ' + attText(pv) : 'אין ניסיון קודם זמין';
+  next.title = nv ? 'הבא: ' + attText(nv) : 'אין ניסיון הבא זמין';
+  prev.onclick = () => { if (pv) pick(pv); };
+  next.onclick = () => { if (nv) pick(nv); };
+  function pick(v) { state.voice = v.id; state.attCat = v.att.cat; refreshControls(); save(); afterVoiceChange(); }
+  const v = voiceOf(state.voice), a = v.att, info = document.getElementById('attInfo');
+  const part = (() => {                                          // "(קטע)": which sentences of paragraph א it has
+    const au = VOICES.audio && VOICES.audio[v.id];
+    if (!au || v.catalog) return '';
+    const e = au[`m01_p01_${langsOf()[0]}_${state.accent}`] || au[`m01_p01_${langsOf()[1] || ''}_${state.accent}`];
+    if (!e || !e.partial) return '';
+    const ss = e.timings.sentences.map(s => s.i + 1);
+    return ` · <b>קטע</b>: ${ss.length === 1 ? 'משפט ' + ss[0] : 'משפטים ' + ss[0] + '–' + ss[ss.length - 1]} של פסקה א`;
+  })();
+  info.innerHTML = list.some(x => x.id === state.voice) || cat === a.cat
+    ? `<b>ניסיון ${pad2(a.num)} מתוך ${order.length}</b>` + (a.when ? ` · ${esc1(a.when_he || a.when)}` : '') +
+      (a.rejected ? ` · <span class="rej">✗ נפסל: ${esc1(a.rejected)}</span>` : '') + part +
+      (a.about ? ` · ${esc1(a.about)}` : '') + (a.src ? ` · מקור: ${esc1(a.src)}` : '')
+    : 'בחר ניסיון מהקטגוריה הזו (מה שמסומן "לא זמין" אין לו הקלטה בשפה ובמבטא שנבחרו).';
+}
+function afterVoiceChange() {
+  // the old attempts have paragraph א only: when the current paragraph has no audio in the new voice, go to one that has
+  const has = p => langsOf().some(l => audioOf(p, l, state.accent));
+  const idx = currentIdx();
+  if (!has(PARAS[idx].p)) {
+    const k = PARAS.findIndex(y => has(y.p));
+    if (k >= 0) {
+      if (playing) { startPara(k); return; }
+      token++; audio.pause(); cur = null; clearActive(); markCurrent(k);
+      const el = paraEl(PARAS[k].p.id); if (el) scrollToBand(el);
+      updateUi(); return;
+    }
+  }
+  onLangOrAccentChanged();
+}
 function refreshControls() {
   segButtons('langRow', LANG_OPTS, () => state.lang, v => { state.lang = v; onLangOrAccentChanged(); },
     code => code === 'both' ? !(langHasAudio('ar', state.accent) || langHasAudio('he', state.accent))
@@ -660,13 +786,16 @@ function refreshControls() {
   segButtons('accentRow', CAT.accents.map(a => [a.code, a.name]), () => state.accent, v => { state.accent = v; onLangOrAccentChanged(); },
     code => !accentHasAudio(code), 'accentSel');
   const vs = document.getElementById('voiceSel');                 // 10.11 "מגיד שיעור"
-  vs.innerHTML = VOICES.voices.map(v => {
+  if (ATT) refreshAttempts(vs);                                   // 18.11: category + attempt + previous / next
+  else vs.innerHTML = VOICES.voices.map(v => {
     const ok = voiceHasAccent(v.id, state.accent);
     const why = ok ? '' : (v.note ? ` (${v.note})` : ' (לא זמין במבטא הזה)');
     return `<option value="${v.id}"${ok ? '' : ' disabled'} title="${v.name}${why}">${v.name}${ok ? '' : ' – ' + (v.note || 'לא זמין במבטא הזה')}</option>`;
   }).join('');
-  vs.value = state.voice;
-  vs.onchange = () => { state.voice = vs.value; refreshControls(); save(); onLangOrAccentChanged(); };
+  if (!ATT) {
+    vs.value = state.voice;
+    vs.onchange = () => { state.voice = vs.value; refreshControls(); save(); onLangOrAccentChanged(); };
+  }
   segButtons('modeRow', MODE_OPTS, () => state.mode, v => { state.mode = v; }, null, 'modeSel');
   document.getElementById('titlesToggle').checked = !!state.titles;
   document.getElementById('speedVal').textContent = state.speed + '×';
